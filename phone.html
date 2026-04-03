@@ -11,10 +11,12 @@
     color: #e8e8e8;
     font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
     font-size: 15px;
-    min-height: 100dvh;
+    height: 100dvh;
     user-select: none;
     -webkit-user-select: none;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Header */
@@ -33,7 +35,7 @@
   .status-text { font-size: 12px; color: rgba(255,255,255,0.7); }
 
   /* Connection screen */
-  .connect-screen { padding: 40px 24px; text-align: center; }
+  .connect-screen { padding: 40px 24px; text-align: center; flex: 1; }
   .connect-screen p { color: rgba(255,255,255,0.5); margin: 12px 0; line-height: 1.5; }
   .room-display {
     font-size: 36px; font-weight: 700; letter-spacing: 0.15em;
@@ -49,8 +51,8 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* Main controls */
-  .controls { display: none; padding: 0; }
-  .controls.active { display: block; }
+  .controls { display: none; padding: 0; flex: 1; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+  .controls.active { display: flex; }
 
   .section {
     padding: 14px 18px;
@@ -115,19 +117,21 @@
   .size-btn:active { background: rgba(52,87,166,0.6); }
   .size-val { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: #fff; }
 
-  /* Collapsible settings toggle */
+  /* Collapsible settings toggle — above playback, expands upward */
   .collapse-toggle {
     display: flex; align-items: center; justify-content: center;
     padding: 10px 18px; cursor: pointer;
     color: rgba(255,255,255,0.35); font-size: 12px; font-weight: 600;
     letter-spacing: 0.05em; -webkit-tap-highlight-color: transparent;
+    border-top: 1px solid rgba(255,255,255,0.05);
     border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
   }
   .collapse-toggle:active { color: rgba(255,255,255,0.6); }
-  .collapse-toggle .arrow { margin-left: 6px; transition: transform 0.2s; }
+  .collapse-toggle .arrow { margin-left: 6px; transition: transform 0.2s; display: inline-block; }
   .collapse-toggle.open .arrow { transform: rotate(180deg); }
-  .collapsible { display: none; }
-  .collapsible.open { display: block; }
+  .collapsible { display: none; overflow-y: auto; }
+  .collapsible.open { display: block; flex: 1; }
 
   /* Transport buttons — minimalistic */
   .transport { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 6px 0; }
@@ -165,8 +169,8 @@
   .vol-row .vol-adj:active { color: #fff; border-color: #00e0c0; }
   .vol-row input[type=range] { flex: 1; height: 3px; accent-color: #00e0c0; cursor: pointer; }
 
-  /* Bottom padding for playback area */
-  .playback-area { padding-bottom: env(safe-area-inset-bottom, 12px); }
+  /* Playback area — pinned to bottom */
+  .playback-area { flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
 </style>
 </head>
 <body>
@@ -185,12 +189,7 @@
 
 <div class="controls" id="controls">
 
-  <!-- Collapsible settings toggle -->
-  <div class="collapse-toggle" id="settingsToggle">
-    Subtitle & Audio Settings <span class="arrow">▼</span>
-  </div>
-
-  <!-- Collapsible settings -->
+  <!-- Collapsible settings — expands upward, scrollable -->
   <div class="collapsible" id="settingsPanel">
     <!-- Audio -->
     <div class="section">
@@ -245,7 +244,12 @@
     </div>
   </div>
 
-  <!-- Playback — always visible at bottom -->
+  <!-- Settings toggle — sits above playback, expands upward -->
+  <div class="collapse-toggle" id="settingsToggle">
+    Subtitle & Audio Settings <span class="arrow">▲</span>
+  </div>
+
+  <!-- Playback — always pinned to bottom -->
   <div class="playback-area">
     <div class="seek-row">
       <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1">
