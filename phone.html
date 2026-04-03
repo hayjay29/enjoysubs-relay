@@ -33,9 +33,7 @@
   .status-text { font-size: 12px; color: rgba(255,255,255,0.7); }
 
   /* Connection screen */
-  .connect-screen {
-    padding: 40px 24px; text-align: center;
-  }
+  .connect-screen { padding: 40px 24px; text-align: center; }
   .connect-screen p { color: rgba(255,255,255,0.5); margin: 12px 0; line-height: 1.5; }
   .room-display {
     font-size: 36px; font-weight: 700; letter-spacing: 0.15em;
@@ -44,15 +42,14 @@
   .connect-screen .spinner {
     display: inline-block; width: 20px; height: 20px;
     border: 2px solid rgba(255,255,255,0.2);
-    border-top-color: #00e0c0;
-    border-radius: 50%;
+    border-top-color: #00e0c0; border-radius: 50%;
     animation: spin 0.8s linear infinite;
     vertical-align: middle; margin-right: 8px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* Main controls */
-  .controls { display: none; padding: 0 0 24px; }
+  .controls { display: none; padding: 0; }
   .controls.active { display: block; }
 
   .section {
@@ -75,95 +72,101 @@
   .row:last-child { margin-bottom: 0; }
   .row label { font-size: 14px; color: rgba(255,255,255,0.7); flex: 1; }
 
-  /* Select */
   select {
     background: rgba(52,87,166,0.25);
     border: 1px solid rgba(52,87,166,0.5);
     border-radius: 8px; color: #fff; font-size: 14px;
     padding: 10px 30px 10px 12px;
-    outline: none; cursor: pointer;
-    width: 100%;
+    outline: none; cursor: pointer; width: 100%;
     -webkit-appearance: none; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300e0c0'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
+    background-repeat: no-repeat; background-position: right 10px center;
   }
   select option { background: #0d1426; color: #fff; }
 
-  /* Offset controls */
-  .offset-row {
-    display: flex; align-items: center; gap: 8px;
-  }
+  .offset-row { display: flex; align-items: center; gap: 8px; }
   .offset-btn {
     width: 44px; height: 44px;
-    background: rgba(52,87,166,0.3);
-    border: 1px solid rgba(52,87,166,0.5);
+    background: rgba(52,87,166,0.3); border: 1px solid rgba(52,87,166,0.5);
     border-radius: 10px; color: #fff; font-size: 20px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
+    cursor: pointer; flex-shrink: 0; -webkit-tap-highlight-color: transparent;
   }
   .offset-btn:active { background: rgba(52,87,166,0.6); }
-  .offset-val {
-    flex: 1; text-align: center;
-    font-size: 18px; font-weight: 600; color: #fff;
-    min-width: 60px;
-  }
+  .offset-val { flex: 1; text-align: center; font-size: 18px; font-weight: 600; color: #fff; min-width: 60px; }
 
-  /* Buttons */
   .btn {
     width: 100%;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
     border-radius: 10px; color: #fff; font-size: 14px;
-    padding: 12px 16px; cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    padding: 12px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .btn:active { background: rgba(52,87,166,0.4); }
-  .btn-swap {
-    background: rgba(52,87,166,0.2);
-    border-color: rgba(52,87,166,0.4);
-    font-size: 16px;
-  }
+  .btn-swap { background: rgba(52,87,166,0.2); border-color: rgba(52,87,166,0.4); font-size: 16px; }
 
-  /* Size controls */
-  .size-row {
-    display: flex; align-items: center; gap: 12px;
-  }
+  .size-row { display: flex; align-items: center; gap: 12px; }
   .size-btn {
     width: 50px; height: 44px;
-    background: rgba(52,87,166,0.3);
-    border: 1px solid rgba(52,87,166,0.5);
+    background: rgba(52,87,166,0.3); border: 1px solid rgba(52,87,166,0.5);
     border-radius: 10px; color: #fff; font-size: 18px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
+    cursor: pointer; flex-shrink: 0; -webkit-tap-highlight-color: transparent;
   }
   .size-btn:active { background: rgba(52,87,166,0.6); }
-  .size-val {
-    flex: 1; text-align: center;
-    font-size: 16px; font-weight: 600; color: #fff;
-  }
+  .size-val { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: #fff; }
 
-  /* Playback control buttons */
-  .ctrl-btn {
-    width: 50px; height: 50px;
-    background: rgba(52,87,166,0.25);
-    border: 1px solid rgba(52,87,166,0.4);
-    border-radius: 50%; color: #fff; font-size: 20px;
+  /* Collapsible settings toggle */
+  .collapse-toggle {
     display: flex; align-items: center; justify-content: center;
+    padding: 10px 18px; cursor: pointer;
+    color: rgba(255,255,255,0.35); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.05em; -webkit-tap-highlight-color: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .collapse-toggle:active { color: rgba(255,255,255,0.6); }
+  .collapse-toggle .arrow { margin-left: 6px; transition: transform 0.2s; }
+  .collapse-toggle.open .arrow { transform: rotate(180deg); }
+  .collapsible { display: none; }
+  .collapsible.open { display: block; }
+
+  /* Transport buttons — minimalistic */
+  .transport { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 6px 0; }
+  .t-btn {
+    background: none; border: none; color: rgba(255,255,255,0.7);
+    font-size: 22px; cursor: pointer; padding: 10px;
+    -webkit-tap-highlight-color: transparent; line-height: 1;
+  }
+  .t-btn:active { color: #fff; }
+  .t-btn-play {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(52,87,166,0.25); border: 1px solid rgba(52,87,166,0.4);
+    color: #fff; font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-btn-play:active { background: rgba(52,87,166,0.5); }
+
+  .action-row { display: flex; gap: 8px; padding: 0 18px; margin-bottom: 8px; }
+  .action-btn {
+    flex: 1; padding: 10px 0; text-align: center;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; color: rgba(255,255,255,0.6); font-size: 12px;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
-  .ctrl-btn:active { background: rgba(52,87,166,0.5); }
-  .ctrl-btn-big {
-    width: 64px; height: 64px; font-size: 28px;
-    background: rgba(224,0,80,0.3);
-    border-color: rgba(224,0,80,0.5);
-  }
-  .ctrl-btn-big:active { background: rgba(224,0,80,0.6); }
-  .ctrl-btn-sm {
-    width: 38px; height: 38px; font-size: 18px; border-radius: 10px;
-  }
+  .action-btn:active { background: rgba(52,87,166,0.3); color: #fff; }
+
+  /* Seek/vol bars */
+  .seek-row { padding: 0 18px 4px; }
+  .seek-row input[type=range] { width: 100%; height: 4px; accent-color: rgba(52,87,166,0.8); cursor: pointer; }
+  .seek-time { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.35); padding: 0 18px 6px; }
+  .vol-row { display: flex; align-items: center; gap: 10px; padding: 4px 18px 10px; }
+  .vol-row .vol-icon { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 16px; cursor: pointer; padding: 4px; -webkit-tap-highlight-color: transparent; }
+  .vol-row .vol-icon:active { color: #fff; }
+  .vol-row .vol-adj { background: none; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); font-size: 16px; font-weight: 700; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; flex-shrink: 0; }
+  .vol-row .vol-adj:active { color: #fff; border-color: #00e0c0; }
+  .vol-row input[type=range] { flex: 1; height: 3px; accent-color: #00e0c0; cursor: pointer; }
+
+  /* Bottom padding for playback area */
+  .playback-area { padding-bottom: env(safe-area-inset-bottom, 12px); }
 </style>
 </head>
 <body>
@@ -182,86 +185,92 @@
 
 <div class="controls" id="controls">
 
-  <!-- Playback -->
-  <div class="section">
-    <div class="stitle" style="color:#e05;">Playback</div>
-    <!-- Seek bar -->
-    <div class="row" style="flex-direction:column; gap:4px;">
-      <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1"
-        style="width:100%; accent-color:#e05; height:6px; cursor:pointer;">
-      <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5);">
-        <span id="timeCur">0:00</span>
-        <span id="timeDur">0:00</span>
+  <!-- Collapsible settings toggle -->
+  <div class="collapse-toggle" id="settingsToggle">
+    Subtitle & Audio Settings <span class="arrow">▼</span>
+  </div>
+
+  <!-- Collapsible settings -->
+  <div class="collapsible" id="settingsPanel">
+    <!-- Audio -->
+    <div class="section">
+      <div class="stitle audio">Audio</div>
+      <select id="audioTrack"></select>
+    </div>
+
+    <!-- Sub A -->
+    <div class="section">
+      <div class="stitle ta">Sub A</div>
+      <select id="trackA"></select>
+      <div class="row" style="margin-top:10px">
+        <label>Sync</label>
+        <div class="offset-row">
+          <button class="offset-btn" id="offsetAMinus">&minus;</button>
+          <div class="offset-val" id="offsetAVal">0.0s</div>
+          <button class="offset-btn" id="offsetAPlus">+</button>
+        </div>
       </div>
     </div>
-    <!-- Transport buttons -->
-    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px;">
-      <button class="ctrl-btn" id="btnRew" title="Rewind 10s">⏪</button>
-      <button class="ctrl-btn ctrl-btn-big" id="btnPlayPause" title="Play/Pause">▶</button>
-      <button class="ctrl-btn" id="btnFwd" title="Forward 10s">⏩</button>
-    </div>
-    <!-- Volume + extras -->
-    <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
-      <button class="ctrl-btn ctrl-btn-sm" id="btnMute" title="Mute">🔊</button>
-      <input type="range" id="volBar" min="0" max="1" value="1" step="0.05"
-        style="flex:1; accent-color:#00e0c0; height:4px; cursor:pointer;">
-    </div>
-    <!-- Extra actions -->
-    <div style="display:flex; gap:8px; margin-top:10px;">
-      <button class="btn" id="btnSkipIntro" style="flex:1; font-size:13px;">Skip Intro</button>
-      <button class="btn" id="btnNextEp" style="flex:1; font-size:13px;">Next Episode ⏭</button>
-    </div>
-  </div>
 
-  <!-- Audio -->
-  <div class="section">
-    <div class="stitle audio">Audio</div>
-    <select id="audioTrack"></select>
-  </div>
+    <!-- Swap -->
+    <div class="section" style="padding:8px 18px;">
+      <button class="btn btn-swap" id="btnSwap">&#8645; Swap A / B</button>
+    </div>
 
-  <!-- Sub A -->
-  <div class="section">
-    <div class="stitle ta">Sub A</div>
-    <select id="trackA"></select>
-    <div class="row" style="margin-top:10px">
-      <label>Sync</label>
-      <div class="offset-row">
-        <button class="offset-btn" id="offsetAMinus">&minus;</button>
-        <div class="offset-val" id="offsetAVal">0.0s</div>
-        <button class="offset-btn" id="offsetAPlus">+</button>
+    <!-- Sub B -->
+    <div class="section">
+      <div class="stitle tb">Sub B</div>
+      <select id="trackB"></select>
+      <div class="row" style="margin-top:10px">
+        <label>Sync</label>
+        <div class="offset-row">
+          <button class="offset-btn" id="offsetBMinus">&minus;</button>
+          <div class="offset-val" id="offsetBVal">0.0s</div>
+          <button class="offset-btn" id="offsetBPlus">+</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Swap -->
-  <div class="section" style="padding:8px 18px;">
-    <button class="btn btn-swap" id="btnSwap">&#8645; Swap A / B</button>
-  </div>
-
-  <!-- Sub B -->
-  <div class="section">
-    <div class="stitle tb">Sub B</div>
-    <select id="trackB"></select>
-    <div class="row" style="margin-top:10px">
-      <label>Sync</label>
-      <div class="offset-row">
-        <button class="offset-btn" id="offsetBMinus">&minus;</button>
-        <div class="offset-val" id="offsetBVal">0.0s</div>
-        <button class="offset-btn" id="offsetBPlus">+</button>
+    <!-- Style -->
+    <div class="section">
+      <div class="stitle">Style</div>
+      <div class="row">
+        <label>Font size</label>
+        <div class="size-row">
+          <button class="size-btn" id="fsMinus">A&minus;</button>
+          <div class="size-val" id="fsVal">36</div>
+          <button class="size-btn" id="fsPlus">A+</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Style -->
-  <div class="section">
-    <div class="stitle">Style</div>
-    <div class="row">
-      <label>Font size</label>
-      <div class="size-row">
-        <button class="size-btn" id="fsMinus">A&minus;</button>
-        <div class="size-val" id="fsVal">36</div>
-        <button class="size-btn" id="fsPlus">A+</button>
-      </div>
+  <!-- Playback — always visible at bottom -->
+  <div class="playback-area">
+    <div class="seek-row">
+      <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1">
+    </div>
+    <div class="seek-time">
+      <span id="timeCur">0:00</span>
+      <span id="timeDur">0:00</span>
+    </div>
+
+    <div class="transport">
+      <button class="t-btn" id="btnRew">⏪</button>
+      <button class="t-btn t-btn-play" id="btnPlayPause">▶</button>
+      <button class="t-btn" id="btnFwd">⏩</button>
+    </div>
+
+    <div class="vol-row">
+      <button class="vol-icon" id="btnMute">🔊</button>
+      <button class="vol-adj" id="btnVolDown">−</button>
+      <input type="range" id="volBar" min="0" max="1" value="1" step="0.05">
+      <button class="vol-adj" id="btnVolUp">+</button>
+    </div>
+
+    <div class="action-row">
+      <button class="action-btn" id="btnSkipIntro">Skip Intro</button>
+      <button class="action-btn" id="btnNextEp">Next Episode</button>
     </div>
   </div>
 
@@ -284,7 +293,7 @@
 
   var ws = null;
   var connected = false;
-  var state = null; // last state from extension
+  var state = null;
   var reconnectTimer = null;
 
   var dotEl = document.getElementById('statusDot');
@@ -306,7 +315,6 @@
     ws.onopen = function() {
       connected = true;
       setStatus('connected');
-      // Request current state from extension
       send({ type: 'GET_STATE' });
     };
 
@@ -316,7 +324,6 @@
         if (msg.type === 'STATE_UPDATE') {
           state = msg;
           renderUI();
-          // Show controls, hide connection screen
           connectScreen.style.display = 'none';
           controls.classList.add('active');
         }
@@ -339,25 +346,28 @@
   }
 
   function send(msg) {
-    if (ws && ws.readyState === 1) {
-      ws.send(JSON.stringify(msg));
-    }
+    if (ws && ws.readyState === 1) ws.send(JSON.stringify(msg));
   }
 
+  // ── Settings toggle ───────────────────────────────────────────
+  var settingsToggle = document.getElementById('settingsToggle');
+  var settingsPanel = document.getElementById('settingsPanel');
+  settingsToggle.addEventListener('click', function() {
+    var open = settingsPanel.classList.toggle('open');
+    settingsToggle.classList.toggle('open', open);
+  });
+
   // ── Render UI from state ──────────────────────────────────────
-  // Track recent user interactions to avoid flickering dropdowns
   var _lastInteraction = 0;
-  var _interactionCooldown = 1500; // ms to skip rebuilding after user picks something
+  var _interactionCooldown = 1500;
 
   function recentlyInteracted() {
     return (Date.now() - _lastInteraction) < _interactionCooldown;
   }
 
   function buildOptions(sel, items, currentVal) {
-    // Only rebuild if the option set actually changed
     var newKeys = items.map(function(o) { return o.value; }).join(',');
     if (sel.dataset.keys === newKeys) {
-      // Just update selected value
       sel.value = currentVal || '';
       return;
     }
@@ -433,7 +443,7 @@
       }
     }
 
-    // Offsets (always update — no flicker risk)
+    // Offsets
     var offA = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.offset || 0) : 0;
     var offB = (s.state && s.state.settings && s.state.settings.b) ? (s.state.settings.b.offset || 0) : 0;
     document.getElementById('offsetAVal').textContent = offA.toFixed(1) + 's';
@@ -448,7 +458,7 @@
     var paused = p.paused !== false;
     document.getElementById('btnPlayPause').textContent = paused ? '▶' : '⏸';
     document.getElementById('btnMute').textContent = p.muted ? '🔇' : '🔊';
-    if (!_seekDragging) {
+    if (!_seekDragging && (Date.now() - _seekReleaseTime > SLIDER_COOLDOWN_MS)) {
       var dur = p.duration || 0;
       var cur = p.time || 0;
       document.getElementById('seekBar').max = dur;
@@ -456,13 +466,16 @@
       document.getElementById('timeCur').textContent = fmtTime(cur);
       document.getElementById('timeDur').textContent = fmtTime(dur);
     }
-    if (!_volDragging) {
+    if (!_volDragging && (Date.now() - _volReleaseTime > SLIDER_COOLDOWN_MS)) {
       document.getElementById('volBar').value = p.volume != null ? p.volume : 1;
     }
   }
 
   var _seekDragging = false;
+  var _seekReleaseTime = 0;
   var _volDragging = false;
+  var _volReleaseTime = 0;
+  var SLIDER_COOLDOWN_MS = 2000;
 
   function fmtTime(ms) {
     var s = Math.floor((ms || 0) / 1000);
@@ -475,7 +488,6 @@
   }
 
   // ── Wire controls ─────────────────────────────────────────────
-
   function markInteraction() { _lastInteraction = Date.now(); }
 
   document.getElementById('audioTrack').addEventListener('change', function() {
@@ -580,6 +592,7 @@
   });
   seekBar.addEventListener('change', function() {
     _seekDragging = false;
+    _seekReleaseTime = Date.now();
     send({ type: 'SEEK', time: +this.value });
   });
 
@@ -587,9 +600,25 @@
   var volBar = document.getElementById('volBar');
   volBar.addEventListener('touchstart', function() { _volDragging = true; }, { passive: true });
   volBar.addEventListener('mousedown', function() { _volDragging = true; });
+  volBar.addEventListener('input', function() {
+    send({ type: 'SET_VOLUME', volume: +this.value });
+  });
   volBar.addEventListener('change', function() {
     _volDragging = false;
+    _volReleaseTime = Date.now();
     send({ type: 'SET_VOLUME', volume: +this.value });
+  });
+  document.getElementById('btnVolDown').addEventListener('click', function() {
+    var v = Math.max(0, (+volBar.value - 0.1).toFixed(2));
+    volBar.value = v;
+    _volReleaseTime = Date.now();
+    send({ type: 'SET_VOLUME', volume: +v });
+  });
+  document.getElementById('btnVolUp').addEventListener('click', function() {
+    var v = Math.min(1, (+volBar.value + 0.1).toFixed(2));
+    volBar.value = v;
+    _volReleaseTime = Date.now();
+    send({ type: 'SET_VOLUME', volume: +v });
   });
 
   // Start connection
