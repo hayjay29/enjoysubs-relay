@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>EnjoySubs Remote</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0c1223;
+    color: #e8e8e8;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    min-height: 100dvh;
+    user-select: none;
+    -webkit-user-select: none;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px;
+    background: linear-gradient(90deg, #3457A6 0%, #00e0c0 100%);
+  }
+  .header h1 { font-size: 16px; font-weight: 600; color: #fff; flex: 1; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #666; flex-shrink: 0;
+  }
+  .status-dot.connected { background: #3cb371; }
+  .status-dot.error { background: #e05; }
+  .status-text { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+  /* Connection screen */
+  .connect-screen {
+    padding: 40px 24px; text-align: center;
+  }
+  .connect-screen p { color: rgba(255,255,255,0.5); margin: 12px 0; line-height: 1.5; }
+  .room-display {
+    font-size: 36px; font-weight: 700; letter-spacing: 0.15em;
+    color: #00e0c0; margin: 16px 0;
+  }
+  .connect-screen .spinner {
+    display: inline-block; width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: #00e0c0;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Main controls */
+  .controls { display: none; padding: 0 0 24px; }
+  .controls.active { display: block; }
+
+  .section {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .stitle {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    margin-bottom: 10px;
+  }
+  .stitle.ta { color: #7ca3f5; }
+  .stitle.tb { color: #00e0c0; }
+  .stitle.audio { color: #f8a5d4; }
+
+  .row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px; gap: 10px;
+  }
+  .row:last-child { margin-bottom: 0; }
+  .row label { font-size: 14px; color: rgba(255,255,255,0.7); flex: 1; }
+
+  /* Select */
+  select {
+    background: rgba(52,87,166,0.25);
+    border: 1px solid rgba(52,87,166,0.5);
+    border-radius: 8px; color: #fff; font-size: 14px;
+    padding: 10px 30px 10px 12px;
+    outline: none; cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300e0c0'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  select option { background: #0d1426; color: #fff; }
+
+  /* Offset controls */
+  .offset-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .offset-btn {
+    width: 44px; height: 44px;
+    background: rgba(52,87,166,0.3);
+    border: 1px solid rgba(52,87,166,0.5);
+    border-radius: 10px; color: #fff; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .offset-btn:active { background: rgba(52,87,166,0.6); }
+  .offset-val {
+    flex: 1; text-align: center;
+    font-size: 18px; font-weight: 600; color: #fff;
+    min-width: 60px;
+  }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px; color: #fff; font-size: 14px;
+    padding: 12px 16px; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { background: rgba(52,87,166,0.4); }
+  .btn-swap {
+    background: rgba(52,87,166,0.2);
+    border-color: rgba(52,87,166,0.4);
+    font-size: 16px;
+  }
+
+  /* Size controls */
+  .size-row {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .size-btn {
+    width: 50px; height: 44px;
+    background: rgba(52,87,166,0.3);
+    border: 1px solid rgba(52,87,166,0.5);
+    border-radius: 10px; color: #fff; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .size-btn:active { background: rgba(52,87,166,0.6); }
+  .size-val {
+    flex: 1; text-align: center;
+    font-size: 16px; font-weight: 600; color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>EnjoySubs Remote</h1>
+  <div class="status-dot" id="statusDot"></div>
+  <span class="status-text" id="statusText">Connecting...</span>
+</div>
+
+<div class="connect-screen" id="connectScreen">
+  <div class="room-display" id="roomDisplay">----</div>
+  <p><span class="spinner"></span> Connecting to extension...</p>
+  <p style="font-size:12px; margin-top:24px;">Make sure the relay server is running<br>and both devices are on the same network.</p>
+</div>
+
+<div class="controls" id="controls">
+
+  <!-- Audio -->
+  <div class="section">
+    <div class="stitle audio">Audio</div>
+    <select id="audioTrack"></select>
+  </div>
+
+  <!-- Sub A -->
+  <div class="section">
+    <div class="stitle ta">Sub A</div>
+    <select id="trackA"></select>
+    <div class="row" style="margin-top:10px">
+      <label>Sync</label>
+      <div class="offset-row">
+        <button class="offset-btn" id="offsetAMinus">&minus;</button>
+        <div class="offset-val" id="offsetAVal">0.0s</div>
+        <button class="offset-btn" id="offsetAPlus">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Swap -->
+  <div class="section" style="padding:8px 18px;">
+    <button class="btn btn-swap" id="btnSwap">&#8645; Swap A / B</button>
+  </div>
+
+  <!-- Sub B -->
+  <div class="section">
+    <div class="stitle tb">Sub B</div>
+    <select id="trackB"></select>
+    <div class="row" style="margin-top:10px">
+      <label>Sync</label>
+      <div class="offset-row">
+        <button class="offset-btn" id="offsetBMinus">&minus;</button>
+        <div class="offset-val" id="offsetBVal">0.0s</div>
+        <button class="offset-btn" id="offsetBPlus">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Style -->
+  <div class="section">
+    <div class="stitle">Style</div>
+    <div class="row">
+      <label>Font size</label>
+      <div class="size-row">
+        <button class="size-btn" id="fsMinus">A&minus;</button>
+        <div class="size-val" id="fsVal">36</div>
+        <button class="size-btn" id="fsPlus">A+</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // Parse room code from URL
+  var params = new URLSearchParams(location.search);
+  var room = params.get('room') || '';
+  var roomEl = document.getElementById('roomDisplay');
+  roomEl.textContent = room || '----';
+
+  if (!room) {
+    document.querySelector('.connect-screen p').textContent = 'No room code. Scan the QR code from EnjoySubs.';
+    return;
+  }
+
+  var ws = null;
+  var connected = false;
+  var state = null; // last state from extension
+  var reconnectTimer = null;
+
+  var dotEl = document.getElementById('statusDot');
+  var textEl = document.getElementById('statusText');
+  var connectScreen = document.getElementById('connectScreen');
+  var controls = document.getElementById('controls');
+
+  function setStatus(s) {
+    dotEl.className = 'status-dot' + (s === 'connected' ? ' connected' : s === 'error' ? ' error' : '');
+    textEl.textContent = s === 'connected' ? 'Connected' : s === 'error' ? 'Disconnected' : 'Connecting...';
+  }
+
+  function connect() {
+    if (ws) { try { ws.close(); } catch(_){} }
+    var host = location.host || 'localhost:9876';
+    var proto = location.protocol === 'https:' ? 'wss' : 'ws';
+    ws = new WebSocket(proto + '://' + host + '/ws?room=' + encodeURIComponent(room) + '&role=phone');
+
+    ws.onopen = function() {
+      connected = true;
+      setStatus('connected');
+      // Request current state from extension
+      send({ type: 'GET_STATE' });
+    };
+
+    ws.onmessage = function(e) {
+      try {
+        var msg = JSON.parse(e.data);
+        if (msg.type === 'STATE_UPDATE') {
+          state = msg;
+          renderUI();
+          // Show controls, hide connection screen
+          connectScreen.style.display = 'none';
+          controls.classList.add('active');
+        }
+        if (msg.type === 'PEER_JOINED' && msg.role === 'extension') {
+          send({ type: 'GET_STATE' });
+        }
+      } catch(_) {}
+    };
+
+    ws.onclose = function() {
+      connected = false;
+      setStatus('error');
+      reconnectTimer = setTimeout(connect, 3000);
+    };
+
+    ws.onerror = function() {
+      connected = false;
+      setStatus('error');
+    };
+  }
+
+  function send(msg) {
+    if (ws && ws.readyState === 1) {
+      ws.send(JSON.stringify(msg));
+    }
+  }
+
+  // ── Render UI from state ──────────────────────────────────────
+  function renderUI() {
+    if (!state) return;
+    var s = state;
+
+    // Audio dropdown
+    var audioSel = document.getElementById('audioTrack');
+    var audioTracks = s.audioTracks || [];
+    var currentAudioId = s.currentAudioTrackId || '';
+    audioSel.innerHTML = '<option value="">-- Default --</option>';
+    for (var i = 0; i < audioTracks.length; i++) {
+      var at = audioTracks[i];
+      var opt = document.createElement('option');
+      opt.value = at.trackId;
+      opt.textContent = at.displayName || at.bcp47 || 'Unknown';
+      audioSel.appendChild(opt);
+    }
+    audioSel.value = currentAudioId || '';
+
+    // Sub A/B dropdowns
+    for (var t of ['a', 'b']) {
+      var sel = document.getElementById(t === 'a' ? 'trackA' : 'trackB');
+      var activeLang = s.state && s.state.subs && s.state.subs[t] ? s.state.subs[t].language : '';
+      sel.innerHTML = '<option value="">-- Off --</option>';
+      var items = s.scanResult || [];
+      var avail = s.availableLanguages || [];
+      var captured = s.capturedTracks || [];
+      var seen = {};
+
+      if (items.length) {
+        items = items.slice().sort(function(a,b) { return (a.label||'').localeCompare(b.label||''); });
+        for (var i = 0; i < items.length; i++) {
+          var item = items[i];
+          var label = item.label || item;
+          var code = item.language || label;
+          if (seen[code]) continue;
+          seen[code] = true;
+          var isCaptured = captured.some(function(c) { return c.lang === code; });
+          var opt = document.createElement('option');
+          opt.value = code;
+          opt.textContent = (isCaptured ? '\u2713 ' : '') + label;
+          sel.appendChild(opt);
+        }
+      } else {
+        for (var i = 0; i < avail.length; i++) {
+          var a = avail[i];
+          if (seen[a.language]) continue;
+          seen[a.language] = true;
+          var opt = document.createElement('option');
+          opt.value = a.language;
+          opt.textContent = (a.captured ? '\u2713 ' : '') + a.label;
+          sel.appendChild(opt);
+        }
+      }
+
+      sel.value = activeLang || '';
+      if (!sel.value && activeLang) {
+        // Try to find by label match
+        for (var j = 0; j < sel.options.length; j++) {
+          if (sel.options[j].textContent.replace(/^\u2713\s*/, '').trim() === activeLang) {
+            sel.value = sel.options[j].value;
+            break;
+          }
+        }
+      }
+    }
+
+    // Offsets
+    var offA = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.offset || 0) : 0;
+    var offB = (s.state && s.state.settings && s.state.settings.b) ? (s.state.settings.b.offset || 0) : 0;
+    document.getElementById('offsetAVal').textContent = offA.toFixed(1) + 's';
+    document.getElementById('offsetBVal').textContent = offB.toFixed(1) + 's';
+
+    // Font size
+    var fs = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.fontSize || 36) : 36;
+    document.getElementById('fsVal').textContent = fs;
+  }
+
+  // ── Wire controls ─────────────────────────────────────────────
+
+  document.getElementById('audioTrack').addEventListener('change', function() {
+    send({ type: 'SET_AUDIO_TRACK', trackId: this.value });
+  });
+
+  document.getElementById('trackA').addEventListener('change', function() {
+    send({ type: 'SET_TRACK', track: 'a', language: this.value });
+  });
+
+  document.getElementById('trackB').addEventListener('change', function() {
+    send({ type: 'SET_TRACK', track: 'b', language: this.value });
+  });
+
+  document.getElementById('btnSwap').addEventListener('click', function() {
+    send({ type: 'SWAP_SUBS' });
+  });
+
+  // Offset buttons
+  function adjustOffset(track, delta) {
+    if (!state || !state.state || !state.state.settings) return;
+    var cur = state.state.settings[track].offset || 0;
+    var next = Math.round((cur + delta) * 10) / 10;
+    next = Math.max(-10, Math.min(10, next));
+    state.state.settings[track].offset = next;
+    document.getElementById(track === 'a' ? 'offsetAVal' : 'offsetBVal').textContent = next.toFixed(1) + 's';
+    send({ type: 'SET_SUB_OFFSET', track: track, value: next });
+  }
+
+  document.getElementById('offsetAMinus').addEventListener('click', function() { adjustOffset('a', -0.1); });
+  document.getElementById('offsetAPlus').addEventListener('click', function() { adjustOffset('a', 0.1); });
+  document.getElementById('offsetBMinus').addEventListener('click', function() { adjustOffset('b', -0.1); });
+  document.getElementById('offsetBPlus').addEventListener('click', function() { adjustOffset('b', 0.1); });
+
+  // Font size buttons
+  function adjustFontSize(delta) {
+    if (!state || !state.state || !state.state.settings) return;
+    var cur = state.state.settings.a.fontSize || 36;
+    var next = Math.max(14, Math.min(56, cur + delta));
+    state.state.settings.a.fontSize = next;
+    state.state.settings.b.fontSize = next;
+    document.getElementById('fsVal').textContent = next;
+    send({ type: 'SET_FONT_ALL', value: next });
+  }
+
+  document.getElementById('fsMinus').addEventListener('click', function() { adjustFontSize(-2); });
+  document.getElementById('fsPlus').addEventListener('click', function() { adjustFontSize(2); });
+
+  // Long-press repeat for offset/size buttons
+  var repeatBtns = [
+    ['offsetAMinus', function() { adjustOffset('a', -0.1); }],
+    ['offsetAPlus',  function() { adjustOffset('a', 0.1); }],
+    ['offsetBMinus', function() { adjustOffset('b', -0.1); }],
+    ['offsetBPlus',  function() { adjustOffset('b', 0.1); }],
+    ['fsMinus',      function() { adjustFontSize(-2); }],
+    ['fsPlus',       function() { adjustFontSize(2); }],
+  ];
+  repeatBtns.forEach(function(pair) {
+    var el = document.getElementById(pair[0]);
+    var fn = pair[1];
+    var timer = null, interval = null;
+    function clear() { clearTimeout(timer); clearInterval(interval); timer = null; interval = null; }
+    el.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      fn();
+      timer = setTimeout(function() { interval = setInterval(fn, 100); }, 400);
+    }, { passive: false });
+    el.addEventListener('touchend', clear);
+    el.addEventListener('touchcancel', clear);
+  });
+
+  // Start connection
+  connect();
+})();
+</script>
+</body>
+</html>
