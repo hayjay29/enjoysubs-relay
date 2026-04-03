@@ -196,8 +196,17 @@
     width: 18px; height: 18px; accent-color: #E91E8C; cursor: pointer; flex-shrink: 0;
   }
 
-  /* Playback area — pinned to bottom */
-  .playback-area { flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
+  /* Playback area — pinned to bottom, extra padding for phone nav bar */
+  .playback-area { flex-shrink: 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); }
+
+  /* Scroll hint at bottom of settings panel */
+  .scroll-hint {
+    text-align: center; padding: 6px 0 2px;
+    font-size: 10px; color: rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
+    animation: fadeHint 3s ease-in-out forwards;
+  }
+  @keyframes fadeHint { 0%,60% { opacity: 1; } 100% { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -314,6 +323,7 @@
         <input type="checkbox" class="toggle" id="cbDisabled">
       </div>
     </div>
+    <div class="scroll-hint" id="scrollHint">Scroll for more settings</div>
   </div>
 
   <!-- Settings toggle — sits above playback, expands upward -->
@@ -428,10 +438,21 @@
   // ── Settings toggle ───────────────────────────────────────────
   var settingsToggle = document.getElementById('settingsToggle');
   var settingsPanel = document.getElementById('settingsPanel');
+  var scrollHint = document.getElementById('scrollHint');
   settingsToggle.addEventListener('click', function() {
     var open = settingsPanel.classList.toggle('open');
     settingsToggle.classList.toggle('open', open);
+    if (open && scrollHint) {
+      // Reset animation so it replays each time panel opens
+      scrollHint.style.display = '';
+      scrollHint.style.animation = 'none';
+      scrollHint.offsetHeight; // force reflow
+      scrollHint.style.animation = '';
+    }
   });
+  settingsPanel.addEventListener('scroll', function() {
+    if (scrollHint) scrollHint.style.display = 'none';
+  }, { passive: true });
 
   // ── Render UI from state ──────────────────────────────────────
   var _lastInteraction = 0;
