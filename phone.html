@@ -36,6 +36,13 @@
   .status-dot.connected { background: #3cb371; }
   .status-dot.error { background: #e05; }
   .status-text { font-size: 12px; color: rgba(255,255,255,0.7); }
+  .disconnect-btn {
+    background: rgba(255,255,255,0.15); border: none; border-radius: 50%;
+    width: 28px; height: 28px; color: #fff; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+  }
+  .disconnect-btn:active { background: rgba(255,80,80,0.5); }
 
   /* Connection screen */
   .connect-screen { padding: 40px 24px; text-align: center; flex: 1; }
@@ -215,6 +222,7 @@
   <h1>EnjoySubs Remote</h1>
   <div class="status-dot" id="statusDot"></div>
   <span class="status-text" id="statusText">Connecting...</span>
+  <button class="disconnect-btn" id="disconnectBtn" title="Disconnect and forget session" style="display:none;">✕</button>
 </div>
 
 <div class="connect-screen" id="connectScreen">
@@ -366,9 +374,15 @@
 (function() {
   'use strict';
 
-  // Parse room code from URL
+  // Parse room code from URL, fall back to saved room in localStorage
   var params = new URLSearchParams(location.search);
   var room = params.get('room') || '';
+
+  // If no room in URL, try to restore from localStorage
+  if (!room) {
+    try { room = localStorage.getItem('enkosubs_remote_room') || ''; } catch(_) {}
+  }
+
   var roomEl = document.getElementById('roomDisplay');
   roomEl.textContent = room || '----';
 
@@ -377,10 +391,14 @@
     return;
   }
 
+  // Save room code so future visits auto-reconnect
+  try { localStorage.setItem('enkosubs_remote_room', room); } catch(_) {}
+
   var ws = null;
   var connected = false;
   var state = null;
   var reconnectTimer = null;
+  var _userDisconnected = false;
 
   var dotEl = document.getElementById('statusDot');
   var textEl = document.getElementById('statusText');
@@ -401,6 +419,7 @@
     ws.onopen = function() {
       connected = true;
       setStatus('connected');
+      document.getElementById('disconnectBtn').style.display = 'flex';
       send({ type: 'GET_STATE' });
     };
 
@@ -422,7 +441,7 @@
     ws.onclose = function() {
       connected = false;
       setStatus('error');
-      reconnectTimer = setTimeout(connect, 3000);
+      if (!_userDisconnected) reconnectTimer = setTimeout(connect, 3000);
     };
 
     ws.onerror = function() {
@@ -434,6 +453,21 @@
   function send(msg) {
     if (ws && ws.readyState === 1) ws.send(JSON.stringify(msg));
   }
+
+  // ── Disconnect button — clears saved session ──────────────────
+  document.getElementById('disconnectBtn').addEventListener('click', function() {
+    _userDisconnected = true;
+    try { localStorage.removeItem('enkosubs_remote_room'); } catch(_) {}
+    if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+    if (ws) { try { ws.close(); } catch(_) {} ws = null; }
+    connected = false;
+    setStatus('');
+    controls.classList.remove('active');
+    connectScreen.style.display = '';
+    document.querySelector('.connect-screen p').textContent = 'Session cleared. Scan the QR code again to reconnect.';
+    roomEl.textContent = '----';
+    document.getElementById('disconnectBtn').style.display = 'none';
+  });
 
   // ── Settings toggle ───────────────────────────────────────────
   var settingsToggle = document.getElementById('settingsToggle');
