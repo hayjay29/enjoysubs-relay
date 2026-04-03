@@ -410,10 +410,26 @@
     textEl.textContent = s === 'connected' ? 'Connected' : s === 'error' ? 'Disconnected' : 'Connecting...';
   }
 
+  var connectMsg = document.querySelector('.connect-screen p');
+
   function connect() {
     if (ws) { try { ws.close(); } catch(_){} }
     var host = location.host || 'localhost:9876';
     var proto = location.protocol === 'https:' ? 'wss' : 'ws';
+
+    // Ping the relay first to wake it from Render free-tier sleep
+    connectMsg.innerHTML = '<span class="spinner"></span> Waking up server...';
+    fetch(location.protocol + '//' + host + '/ping').then(function() {
+      connectMsg.innerHTML = '<span class="spinner"></span> Connecting to extension...';
+      openSocket(proto, host);
+    }).catch(function() {
+      // Even if ping fails, try the socket anyway
+      connectMsg.innerHTML = '<span class="spinner"></span> Connecting...';
+      openSocket(proto, host);
+    });
+  }
+
+  function openSocket(proto, host) {
     ws = new WebSocket(proto + '://' + host + '/ws?room=' + encodeURIComponent(room) + '&role=phone');
 
     ws.onopen = function() {

@@ -23,6 +23,15 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
+  if (req.url === '/privacy' || req.url === '/privacy-policy') {
+    const filePath = path.join(__dirname, 'privacy-policy.html');
+    fs.readFile(filePath, (err, data) => {
+      if (err) { res.writeHead(500); res.end('Error'); return; }
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+      res.end(data);
+    });
+    return;
+  }
   if (req.url === '/ping') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
     res.end(JSON.stringify({ ok: true }));

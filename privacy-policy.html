@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnjoySubs — Privacy Policy</title>
+<style>
+  body {
+    font-family: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    max-width: 680px; margin: 40px auto; padding: 0 20px;
+    color: #222; line-height: 1.7; background: #fafafa;
+  }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  h2 { font-size: 18px; margin-top: 28px; }
+  .updated { color: #888; font-size: 13px; margin-bottom: 32px; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  a { color: #3457A6; }
+</style>
+</head>
+<body>
+<h1>EnjoySubs — Privacy Policy</h1>
+<p class="updated">Last updated: April 3, 2026</p>
+
+<h2>What EnjoySubs does</h2>
+<p>EnjoySubs is a Chrome extension that displays dual-language subtitles on Netflix. It intercepts Netflix's own subtitle responses in your browser and renders a custom overlay on top of the video player.</p>
+
+<h2>Data collection</h2>
+<p><strong>EnjoySubs does not collect, store, or transmit any personal data.</strong></p>
+<ul>
+  <li>No browsing history, viewing habits, or Netflix account information is collected.</li>
+  <li>No subtitle data is sent to any external server.</li>
+  <li>No analytics, telemetry, or tracking of any kind is used.</li>
+</ul>
+
+<h2>Local storage</h2>
+<p>EnjoySubs uses Chrome's <code>storage</code> API to save your preferences locally on your device. This includes:</p>
+<ul>
+  <li>Selected subtitle languages and sync offsets</li>
+  <li>Styling options (colors, font size, opacity)</li>
+  <li>Panel position and layout preferences</li>
+  <li>Phone remote room code (if you use the remote feature)</li>
+</ul>
+<p>These settings never leave your device and are not accessible to the developer or any third party.</p>
+
+<h2>Phone remote feature</h2>
+<p>If you use the optional phone remote control feature, your device connects to a WebSocket relay server hosted on Render.com. This relay:</p>
+<ul>
+  <li>Forwards playback control messages (play, pause, volume, seek) between your phone and your browser — nothing else.</li>
+  <li>Does not store, log, or inspect message contents.</li>
+  <li>Uses a random room code as a shared key. No account or login is required.</li>
+  <li>Does not transmit subtitle data, viewing history, or personal information.</li>
+</ul>
+
+<h2>Permissions explained</h2>
+<ul>
+  <li><strong>storage</strong> — Save your settings locally on your device.</li>
+  <li><strong>tabs</strong> — Detect when you are on a Netflix page so the extension can activate.</li>
+  <li><strong>scripting</strong> — Inject the subtitle overlay into Netflix pages.</li>
+  <li><strong>Host permissions (netflix.com)</strong> — Required to run on Netflix pages only.</li>
+  <li><strong>Host permissions (enjoysubs-relay.onrender.com)</strong> — Connect to the phone remote relay server (optional feature).</li>
+</ul>
+
+<h2>Third-party services</h2>
+<p>EnjoySubs does not use Google Analytics, advertising networks, or any third-party tracking services. The only external service used is the optional phone remote relay described above.</p>
+
+<h2>Changes to this policy</h2>
+<p>If this policy changes, the updated version will be published at this same URL with a new "Last updated" date.</p>
+
+<h2>Contact</h2>
+<p>Questions or concerns? Open an issue at <a href="https://github.com/hayjay29/enjoysubs-relay">github.com/hayjay29/enjoysubs-relay</a>.</p>
+</body>
+</html>
