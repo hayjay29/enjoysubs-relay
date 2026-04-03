@@ -294,73 +294,95 @@
   }
 
   // ── Render UI from state ──────────────────────────────────────
+  // Track recent user interactions to avoid flickering dropdowns
+  var _lastInteraction = 0;
+  var _interactionCooldown = 1500; // ms to skip rebuilding after user picks something
+
+  function recentlyInteracted() {
+    return (Date.now() - _lastInteraction) < _interactionCooldown;
+  }
+
+  function buildOptions(sel, items, currentVal) {
+    // Only rebuild if the option set actually changed
+    var newKeys = items.map(function(o) { return o.value; }).join(',');
+    if (sel.dataset.keys === newKeys) {
+      // Just update selected value
+      sel.value = currentVal || '';
+      return;
+    }
+    sel.dataset.keys = newKeys;
+    sel.innerHTML = '';
+    for (var i = 0; i < items.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = items[i].value;
+      opt.textContent = items[i].label;
+      sel.appendChild(opt);
+    }
+    sel.value = currentVal || '';
+  }
+
   function renderUI() {
     if (!state) return;
     var s = state;
+    var skip = recentlyInteracted();
 
     // Audio dropdown
-    var audioSel = document.getElementById('audioTrack');
-    var audioTracks = s.audioTracks || [];
-    var currentAudioId = s.currentAudioTrackId || '';
-    audioSel.innerHTML = '<option value="">-- Default --</option>';
-    for (var i = 0; i < audioTracks.length; i++) {
-      var at = audioTracks[i];
-      var opt = document.createElement('option');
-      opt.value = at.trackId;
-      opt.textContent = at.displayName || at.bcp47 || 'Unknown';
-      audioSel.appendChild(opt);
+    if (!skip) {
+      var audioSel = document.getElementById('audioTrack');
+      var audioTracks = s.audioTracks || [];
+      var currentAudioId = s.currentAudioTrackId || '';
+      var audioOpts = [{ value: '', label: '-- Default --' }];
+      for (var i = 0; i < audioTracks.length; i++) {
+        var at = audioTracks[i];
+        audioOpts.push({ value: at.trackId, label: at.displayName || at.bcp47 || 'Unknown' });
+      }
+      buildOptions(audioSel, audioOpts, currentAudioId);
     }
-    audioSel.value = currentAudioId || '';
 
     // Sub A/B dropdowns
-    for (var t of ['a', 'b']) {
-      var sel = document.getElementById(t === 'a' ? 'trackA' : 'trackB');
-      var activeLang = s.state && s.state.subs && s.state.subs[t] ? s.state.subs[t].language : '';
-      sel.innerHTML = '<option value="">-- Off --</option>';
-      var items = s.scanResult || [];
-      var avail = s.availableLanguages || [];
-      var captured = s.capturedTracks || [];
-      var seen = {};
+    if (!skip) {
+      for (var t of ['a', 'b']) {
+        var sel = document.getElementById(t === 'a' ? 'trackA' : 'trackB');
+        var activeLang = s.state && s.state.subs && s.state.subs[t] ? s.state.subs[t].language : '';
+        var items = s.scanResult || [];
+        var avail = s.availableLanguages || [];
+        var captured = s.capturedTracks || [];
+        var seen = {};
+        var opts = [{ value: '', label: '-- Off --' }];
 
-      if (items.length) {
-        items = items.slice().sort(function(a,b) { return (a.label||'').localeCompare(b.label||''); });
-        for (var i = 0; i < items.length; i++) {
-          var item = items[i];
-          var label = item.label || item;
-          var code = item.language || label;
-          if (seen[code]) continue;
-          seen[code] = true;
-          var isCaptured = captured.some(function(c) { return c.lang === code; });
-          var opt = document.createElement('option');
-          opt.value = code;
-          opt.textContent = (isCaptured ? '\u2713 ' : '') + label;
-          sel.appendChild(opt);
+        if (items.length) {
+          items = items.slice().sort(function(a,b) { return (a.label||'').localeCompare(b.label||''); });
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var label = item.label || item;
+            var code = item.language || label;
+            if (seen[code]) continue;
+            seen[code] = true;
+            var isCaptured = captured.some(function(c) { return c.lang === code; });
+            opts.push({ value: code, label: (isCaptured ? '\u2713 ' : '') + label });
+          }
+        } else {
+          for (var i = 0; i < avail.length; i++) {
+            var a = avail[i];
+            if (seen[a.language]) continue;
+            seen[a.language] = true;
+            opts.push({ value: a.language, label: (a.captured ? '\u2713 ' : '') + a.label });
+          }
         }
-      } else {
-        for (var i = 0; i < avail.length; i++) {
-          var a = avail[i];
-          if (seen[a.language]) continue;
-          seen[a.language] = true;
-          var opt = document.createElement('option');
-          opt.value = a.language;
-          opt.textContent = (a.captured ? '\u2713 ' : '') + a.label;
-          sel.appendChild(opt);
-        }
-      }
 
-      sel.value = activeLang || '';
-      if (!sel.value && activeLang) {
-        // Try to find by label match
-        for (var j = 0; j < sel.options.length; j++) {
-          if (sel.options[j].textContent.replace(/^\u2713\s*/, '').trim() === activeLang) {
-            sel.value = sel.options[j].value;
-            break;
+        buildOptions(sel, opts, activeLang);
+        if (!sel.value && activeLang) {
+          for (var j = 0; j < sel.options.length; j++) {
+            if (sel.options[j].textContent.replace(/^\u2713\s*/, '').trim() === activeLang) {
+              sel.value = sel.options[j].value;
+              break;
+            }
           }
         }
       }
     }
 
-    // Offsets
+    // Offsets (always update — no flicker risk)
     var offA = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.offset || 0) : 0;
     var offB = (s.state && s.state.settings && s.state.settings.b) ? (s.state.settings.b.offset || 0) : 0;
     document.getElementById('offsetAVal').textContent = offA.toFixed(1) + 's';
@@ -373,19 +395,25 @@
 
   // ── Wire controls ─────────────────────────────────────────────
 
+  function markInteraction() { _lastInteraction = Date.now(); }
+
   document.getElementById('audioTrack').addEventListener('change', function() {
+    markInteraction();
     send({ type: 'SET_AUDIO_TRACK', trackId: this.value });
   });
 
   document.getElementById('trackA').addEventListener('change', function() {
+    markInteraction();
     send({ type: 'SET_TRACK', track: 'a', language: this.value });
   });
 
   document.getElementById('trackB').addEventListener('change', function() {
+    markInteraction();
     send({ type: 'SET_TRACK', track: 'b', language: this.value });
   });
 
   document.getElementById('btnSwap').addEventListener('click', function() {
+    markInteraction();
     send({ type: 'SWAP_SUBS' });
   });
 
