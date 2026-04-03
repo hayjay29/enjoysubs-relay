@@ -144,6 +144,26 @@
     flex: 1; text-align: center;
     font-size: 16px; font-weight: 600; color: #fff;
   }
+
+  /* Playback control buttons */
+  .ctrl-btn {
+    width: 50px; height: 50px;
+    background: rgba(52,87,166,0.25);
+    border: 1px solid rgba(52,87,166,0.4);
+    border-radius: 50%; color: #fff; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .ctrl-btn:active { background: rgba(52,87,166,0.5); }
+  .ctrl-btn-big {
+    width: 64px; height: 64px; font-size: 28px;
+    background: rgba(224,0,80,0.3);
+    border-color: rgba(224,0,80,0.5);
+  }
+  .ctrl-btn-big:active { background: rgba(224,0,80,0.6); }
+  .ctrl-btn-sm {
+    width: 38px; height: 38px; font-size: 18px; border-radius: 10px;
+  }
 </style>
 </head>
 <body>
@@ -161,6 +181,37 @@
 </div>
 
 <div class="controls" id="controls">
+
+  <!-- Playback -->
+  <div class="section">
+    <div class="stitle" style="color:#e05;">Playback</div>
+    <!-- Seek bar -->
+    <div class="row" style="flex-direction:column; gap:4px;">
+      <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1"
+        style="width:100%; accent-color:#e05; height:6px; cursor:pointer;">
+      <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5);">
+        <span id="timeCur">0:00</span>
+        <span id="timeDur">0:00</span>
+      </div>
+    </div>
+    <!-- Transport buttons -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px;">
+      <button class="ctrl-btn" id="btnRew" title="Rewind 10s">⏪</button>
+      <button class="ctrl-btn ctrl-btn-big" id="btnPlayPause" title="Play/Pause">▶</button>
+      <button class="ctrl-btn" id="btnFwd" title="Forward 10s">⏩</button>
+    </div>
+    <!-- Volume + extras -->
+    <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+      <button class="ctrl-btn ctrl-btn-sm" id="btnMute" title="Mute">🔊</button>
+      <input type="range" id="volBar" min="0" max="1" value="1" step="0.05"
+        style="flex:1; accent-color:#00e0c0; height:4px; cursor:pointer;">
+    </div>
+    <!-- Extra actions -->
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <button class="btn" id="btnSkipIntro" style="flex:1; font-size:13px;">Skip Intro</button>
+      <button class="btn" id="btnNextEp" style="flex:1; font-size:13px;">Next Episode ⏭</button>
+    </div>
+  </div>
 
   <!-- Audio -->
   <div class="section">
@@ -391,6 +442,36 @@
     // Font size
     var fs = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.fontSize || 36) : 36;
     document.getElementById('fsVal').textContent = fs;
+
+    // Player state
+    var p = s.player || {};
+    var paused = p.paused !== false;
+    document.getElementById('btnPlayPause').textContent = paused ? '▶' : '⏸';
+    document.getElementById('btnMute').textContent = p.muted ? '🔇' : '🔊';
+    if (!_seekDragging) {
+      var dur = p.duration || 0;
+      var cur = p.time || 0;
+      document.getElementById('seekBar').max = dur;
+      document.getElementById('seekBar').value = cur;
+      document.getElementById('timeCur').textContent = fmtTime(cur);
+      document.getElementById('timeDur').textContent = fmtTime(dur);
+    }
+    if (!_volDragging) {
+      document.getElementById('volBar').value = p.volume != null ? p.volume : 1;
+    }
+  }
+
+  var _seekDragging = false;
+  var _volDragging = false;
+
+  function fmtTime(ms) {
+    var s = Math.floor((ms || 0) / 1000);
+    var m = Math.floor(s / 60);
+    s = s % 60;
+    var h = Math.floor(m / 60);
+    m = m % 60;
+    if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    return m + ':' + String(s).padStart(2,'0');
   }
 
   // ── Wire controls ─────────────────────────────────────────────
@@ -468,6 +549,47 @@
     }, { passive: false });
     el.addEventListener('touchend', clear);
     el.addEventListener('touchcancel', clear);
+  });
+
+  // ── Playback controls ──────────────────────────────────────────
+  document.getElementById('btnPlayPause').addEventListener('click', function() {
+    send({ type: 'PLAY_PAUSE' });
+  });
+  document.getElementById('btnRew').addEventListener('click', function() {
+    send({ type: 'SEEK_REL', delta: -10 });
+  });
+  document.getElementById('btnFwd').addEventListener('click', function() {
+    send({ type: 'SEEK_REL', delta: 10 });
+  });
+  document.getElementById('btnMute').addEventListener('click', function() {
+    send({ type: 'TOGGLE_MUTE' });
+  });
+  document.getElementById('btnSkipIntro').addEventListener('click', function() {
+    send({ type: 'SKIP_INTRO' });
+  });
+  document.getElementById('btnNextEp').addEventListener('click', function() {
+    send({ type: 'NEXT_EPISODE' });
+  });
+
+  // Seek bar
+  var seekBar = document.getElementById('seekBar');
+  seekBar.addEventListener('touchstart', function() { _seekDragging = true; }, { passive: true });
+  seekBar.addEventListener('mousedown', function() { _seekDragging = true; });
+  seekBar.addEventListener('input', function() {
+    document.getElementById('timeCur').textContent = fmtTime(+this.value);
+  });
+  seekBar.addEventListener('change', function() {
+    _seekDragging = false;
+    send({ type: 'SEEK', time: +this.value });
+  });
+
+  // Volume bar
+  var volBar = document.getElementById('volBar');
+  volBar.addEventListener('touchstart', function() { _volDragging = true; }, { passive: true });
+  volBar.addEventListener('mousedown', function() { _volDragging = true; });
+  volBar.addEventListener('change', function() {
+    _volDragging = false;
+    send({ type: 'SET_VOLUME', volume: +this.value });
   });
 
   // Start connection
