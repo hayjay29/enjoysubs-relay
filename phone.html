@@ -172,6 +172,30 @@
   .vol-row .vol-adj:active { color: #fff; border-color: #00e0c0; }
   .vol-row input[type=range] { flex: 1; height: 3px; accent-color: #00e0c0; cursor: pointer; }
 
+  /* Inline section title */
+  .stitle-inline { font-size: 13px; color: rgba(255,255,255,0.7); flex: 1; }
+  .stitle-inline.ta { color: #7ca3f5; }
+  .stitle-inline.tb { color: #00e0c0; }
+
+  /* Color picker */
+  input[type=color] {
+    width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px; background: none; cursor: pointer; padding: 2px;
+    -webkit-appearance: none; appearance: none;
+  }
+  input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  input[type=color]::-webkit-color-swatch { border-radius: 6px; border: none; }
+
+  /* Small slider */
+  .sm-slider {
+    width: 90px; height: 4px; accent-color: #00e0c0; cursor: pointer; flex-shrink: 0;
+  }
+
+  /* Toggle checkbox */
+  .toggle {
+    width: 18px; height: 18px; accent-color: #E91E8C; cursor: pointer; flex-shrink: 0;
+  }
+
   /* Playback area — pinned to bottom */
   .playback-area { flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
 </style>
@@ -233,6 +257,18 @@
       </div>
     </div>
 
+    <!-- Sub A Color -->
+    <div class="section">
+      <div class="row">
+        <label class="stitle-inline ta">Sub A color</label>
+        <input type="color" id="colorA" value="#ffffff">
+      </div>
+      <div class="row">
+        <label class="stitle-inline tb">Sub B color</label>
+        <input type="color" id="colorB" value="#00e0c0">
+      </div>
+    </div>
+
     <!-- Style -->
     <div class="section">
       <div class="stitle">Style</div>
@@ -243,6 +279,39 @@
           <div class="size-val" id="fsVal">36</div>
           <button class="size-btn" id="fsPlus">A+</button>
         </div>
+      </div>
+      <div class="row">
+        <label>Shadow box opacity: <span id="opVal">30</span>%</label>
+        <input type="range" class="sm-slider" id="opSlider" min="0" max="100" value="30">
+      </div>
+      <div class="row">
+        <label>Shadow box</label>
+        <input type="checkbox" class="toggle" id="cbShadow">
+      </div>
+      <div class="row">
+        <label>Subtitle outline</label>
+        <input type="checkbox" class="toggle" id="cbOutline">
+      </div>
+      <div class="row">
+        <label>Split subs</label>
+        <input type="checkbox" class="toggle" id="cbSplit">
+      </div>
+      <div class="row">
+        <label>Lock subs</label>
+        <input type="checkbox" class="toggle" id="cbLock">
+      </div>
+    </div>
+
+    <!-- Options -->
+    <div class="section">
+      <div class="stitle">Options</div>
+      <div class="row">
+        <label>Auto skip intro</label>
+        <input type="checkbox" class="toggle" id="cbAutoSkip">
+      </div>
+      <div class="row">
+        <label>Disable extension</label>
+        <input type="checkbox" class="toggle" id="cbDisabled">
       </div>
     </div>
   </div>
@@ -460,6 +529,27 @@
     var fs = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.fontSize || 36) : 36;
     document.getElementById('fsVal').textContent = fs;
 
+    // Colors
+    if (!skip && s.state && s.state.settings) {
+      if (s.state.settings.a.fontColor) document.getElementById('colorA').value = s.state.settings.a.fontColor;
+      if (s.state.settings.b.fontColor) document.getElementById('colorB').value = s.state.settings.b.fontColor;
+    }
+
+    // Style toggles & sliders
+    if (s.state) {
+      document.getElementById('cbShadow').checked = !!s.state.shadowBoxEnabled;
+      document.getElementById('cbOutline').checked = !!s.state.textOutlineEnabled;
+      document.getElementById('cbSplit').checked = !!s.state.splitSubsEnabled;
+      document.getElementById('cbLock').checked = !!s.state.lockSubtitlePosition;
+      document.getElementById('cbAutoSkip').checked = !!s.state.autoSkipIntro;
+      document.getElementById('cbDisabled').checked = !!s.state.extensionDisabled;
+      if (s.state.settings && s.state.settings.a) {
+        var op = s.state.settings.a.opacity != null ? s.state.settings.a.opacity : 30;
+        document.getElementById('opSlider').value = op;
+        document.getElementById('opVal').textContent = op;
+      }
+    }
+
     // Player state
     var p = s.player || {};
     var paused = p.paused !== false;
@@ -572,6 +662,38 @@
     }, { passive: false });
     el.addEventListener('touchend', clear);
     el.addEventListener('touchcancel', clear);
+  });
+
+  // ── Color pickers ──────────────────────────────────────────────
+  document.getElementById('colorA').addEventListener('input', function() {
+    send({ type: 'SET_COLOR', track: 'a', color: this.value });
+  });
+  document.getElementById('colorB').addEventListener('input', function() {
+    send({ type: 'SET_COLOR', track: 'b', color: this.value });
+  });
+
+  // ── Style toggles ────────────────────────────────────────────
+  document.getElementById('opSlider').addEventListener('input', function() {
+    document.getElementById('opVal').textContent = this.value;
+    send({ type: 'SET_OPACITY', value: +this.value });
+  });
+  document.getElementById('cbShadow').addEventListener('change', function() {
+    send({ type: 'SET_SHADOW_BOX', value: this.checked });
+  });
+  document.getElementById('cbOutline').addEventListener('change', function() {
+    send({ type: 'SET_TEXT_OUTLINE', value: this.checked });
+  });
+  document.getElementById('cbSplit').addEventListener('change', function() {
+    send({ type: 'SET_SPLIT_SUBS', value: this.checked });
+  });
+  document.getElementById('cbLock').addEventListener('change', function() {
+    send({ type: 'SET_LOCK_POSITION', value: this.checked });
+  });
+  document.getElementById('cbAutoSkip').addEventListener('change', function() {
+    send({ type: 'SET_AUTO_SKIP', value: this.checked });
+  });
+  document.getElementById('cbDisabled').addEventListener('change', function() {
+    send({ type: 'SET_DISABLED', value: this.checked });
   });
 
   // ── Playback controls ──────────────────────────────────────────
