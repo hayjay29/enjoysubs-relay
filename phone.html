@@ -65,13 +65,13 @@
   .controls.active { display: flex; flex: 1; flex-direction: column; justify-content: flex-end; overflow: hidden; min-height: 0; }
 
   .section {
-    padding: 14px 18px;
+    padding: 8px 18px;
     border-bottom: 1px solid rgba(255,255,255,0.07);
   }
   .stitle {
     font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
     text-transform: uppercase; color: rgba(255,255,255,0.4);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .stitle.ta { color: #7ca3f5; }
   .stitle.tb { color: #00e0c0; }
@@ -79,16 +79,16 @@
 
   .row {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px; gap: 10px;
+    margin-bottom: 6px; gap: 8px;
   }
   .row:last-child { margin-bottom: 0; }
-  .row label { font-size: 14px; color: rgba(255,255,255,0.7); flex: 1; }
+  .row label { font-size: 13px; color: rgba(255,255,255,0.7); flex: 1; }
 
   select {
     background: rgba(52,87,166,0.25);
     border: 1px solid rgba(52,87,166,0.5);
-    border-radius: 8px; color: #fff; font-size: 14px;
-    padding: 10px 30px 10px 12px;
+    border-radius: 8px; color: #fff; font-size: 13px;
+    padding: 8px 30px 8px 12px;
     outline: none; cursor: pointer; width: 100%;
     -webkit-appearance: none; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300e0c0'/%3E%3C/svg%3E");
@@ -98,23 +98,23 @@
 
   .offset-row { display: flex; align-items: center; gap: 8px; }
   .offset-btn {
-    width: 44px; height: 44px;
+    width: 36px; height: 36px;
     background: rgba(52,87,166,0.3); border: 1px solid rgba(52,87,166,0.5);
-    border-radius: 10px; color: #fff; font-size: 20px;
+    border-radius: 8px; color: #fff; font-size: 18px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; flex-shrink: 0; -webkit-tap-highlight-color: transparent;
   }
   .offset-btn:active { background: rgba(52,87,166,0.6); }
-  .offset-val { flex: 1; text-align: center; font-size: 18px; font-weight: 600; color: #fff; min-width: 60px; }
+  .offset-val { flex: 1; text-align: center; font-size: 15px; font-weight: 600; color: #fff; min-width: 50px; }
 
   .btn {
     width: 100%;
     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 10px; color: #fff; font-size: 14px;
-    padding: 12px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    border-radius: 8px; color: #fff; font-size: 13px;
+    padding: 8px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .btn:active { background: rgba(52,87,166,0.4); }
-  .btn-swap { background: rgba(52,87,166,0.2); border-color: rgba(52,87,166,0.4); font-size: 16px; }
+  .btn-swap { background: rgba(52,87,166,0.2); border-color: rgba(52,87,166,0.4); font-size: 14px; }
 
   .size-row { display: flex; align-items: center; gap: 12px; }
   .size-btn {
@@ -245,7 +245,7 @@
     <div class="section">
       <div class="stitle ta">Sub A</div>
       <select id="trackA"></select>
-      <div class="row" style="margin-top:10px">
+      <div class="row" style="margin-top:6px">
         <label>Sync</label>
         <div class="offset-row">
           <button class="offset-btn" id="offsetAMinus">&minus;</button>
@@ -256,7 +256,7 @@
     </div>
 
     <!-- Swap -->
-    <div class="section" style="padding:8px 18px;">
+    <div class="section" style="padding:4px 18px;">
       <button class="btn btn-swap" id="btnSwap">&#8645; Swap A / B</button>
     </div>
 
@@ -264,7 +264,7 @@
     <div class="section">
       <div class="stitle tb">Sub B</div>
       <select id="trackB"></select>
-      <div class="row" style="margin-top:10px">
+      <div class="row" style="margin-top:6px">
         <label>Sync</label>
         <div class="offset-row">
           <button class="offset-btn" id="offsetBMinus">&minus;</button>
@@ -298,8 +298,12 @@
         </div>
       </div>
       <div class="row">
-        <label>Shadow box opacity: <span id="opVal">30</span>%</label>
-        <input type="range" class="sm-slider" id="opSlider" min="0" max="100" value="30">
+        <label>Shadow opacity</label>
+        <div class="offset-row">
+          <button class="offset-btn" id="opMinus">&minus;</button>
+          <div class="offset-val" id="opVal">30%</div>
+          <button class="offset-btn" id="opPlus">+</button>
+        </div>
       </div>
       <div class="row">
         <label>Shadow box</label>
@@ -616,8 +620,7 @@
       document.getElementById('cbDisabled').checked = !!s.state.extensionDisabled;
       if (s.state.settings && s.state.settings.a) {
         var op = s.state.settings.a.opacity != null ? s.state.settings.a.opacity : 30;
-        document.getElementById('opSlider').value = op;
-        document.getElementById('opVal').textContent = op;
+        document.getElementById('opVal').textContent = op + '%';
       }
     }
 
@@ -744,9 +747,17 @@
   });
 
   // ── Style toggles ────────────────────────────────────────────
-  document.getElementById('opSlider').addEventListener('input', function() {
-    document.getElementById('opVal').textContent = this.value;
-    send({ type: 'SET_OPACITY', value: +this.value });
+  document.getElementById('opMinus').addEventListener('click', function() {
+    var cur = parseInt(document.getElementById('opVal').textContent) || 0;
+    var next = Math.max(0, cur - 5);
+    document.getElementById('opVal').textContent = next + '%';
+    send({ type: 'SET_OPACITY', value: next });
+  });
+  document.getElementById('opPlus').addEventListener('click', function() {
+    var cur = parseInt(document.getElementById('opVal').textContent) || 0;
+    var next = Math.min(100, cur + 5);
+    document.getElementById('opVal').textContent = next + '%';
+    send({ type: 'SET_OPACITY', value: next });
   });
   document.getElementById('cbShadow').addEventListener('change', function() {
     send({ type: 'SET_SHADOW_BOX', value: this.checked });
