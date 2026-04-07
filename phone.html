@@ -249,57 +249,29 @@
       <select id="audioTrack"></select>
     </div>
 
-    <!-- Sub A -->
+    <!-- Sub A + Sub B side by side -->
     <div class="section">
-      <div class="stitle ta">Sub A</div>
-      <select id="trackA"></select>
-      <div class="row" style="margin-top:6px">
-        <label>Sync</label>
-        <div class="offset-row">
-          <button class="offset-btn" id="offsetAMinus">&minus;</button>
-          <div class="offset-val" id="offsetAVal">0.0s</div>
-          <button class="offset-btn" id="offsetAPlus">+</button>
+      <div style="display:flex; align-items:flex-end; gap:0;">
+        <div style="flex:1; min-width:0;">
+          <div class="stitle ta" style="margin-bottom:6px;">Sub A</div>
+          <select id="trackA" style="width:100%;"></select>
+        </div>
+        <div style="padding:0 8px 8px;">
+          <button class="btn btn-swap" id="btnSwap" style="padding:6px 8px; font-size:16px; border-radius:6px;">&#8646;</button>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div class="stitle tb" style="margin-bottom:6px;">Sub B</div>
+          <select id="trackB" style="width:100%;"></select>
         </div>
       </div>
-    </div>
-
-    <!-- Swap / Save default -->
-    <div class="section" style="padding:4px 18px;">
-      <div style="display:flex; gap:8px;">
-        <button class="btn btn-swap" id="btnSwap" style="flex:1">&#8645; Swap A / B</button>
-        <button class="btn" id="btnSaveDefault" style="flex:1">&#9733; Save as default</button>
+      <!-- Auto skip intro -->
+      <div class="row" style="margin-top:12px; justify-content:flex-end;">
+        <label style="flex:none;">Auto skip intro</label>
+        <input type="checkbox" class="toggle" id="cbAutoSkip">
       </div>
-    </div>
-
-    <!-- Sub B -->
-    <div class="section">
-      <div class="stitle tb">Sub B</div>
-      <select id="trackB"></select>
-      <div class="row" style="margin-top:6px">
-        <label>Sync</label>
-        <div class="offset-row">
-          <button class="offset-btn" id="offsetBMinus">&minus;</button>
-          <div class="offset-val" id="offsetBVal">0.0s</div>
-          <button class="offset-btn" id="offsetBPlus">+</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Colors -->
-    <div class="section">
-      <div class="row">
-        <label class="stitle-inline ta">Sub A color</label>
-        <button type="button" class="color-preset" data-track="a" data-color="#ffffff" style="background:#ffffff" title="White"></button>
-        <button type="button" class="color-preset" data-track="a" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
-        <button type="button" class="color-preset" data-track="a" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
-        <button type="button" class="color-preset" data-track="a" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
-      </div>
-      <div class="row" style="margin-top:6px">
-        <label class="stitle-inline tb">Sub B color</label>
-        <button type="button" class="color-preset" data-track="b" data-color="#ffffff" style="background:#ffffff" title="White"></button>
-        <button type="button" class="color-preset" data-track="b" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
-        <button type="button" class="color-preset" data-track="b" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
-        <button type="button" class="color-preset" data-track="b" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
+      <!-- Save pair as default -->
+      <div style="margin-top:8px;">
+        <button class="btn" id="btnSaveDefault" style="width:100%;">&#9733; Save pair as default</button>
       </div>
     </div>
 
@@ -315,7 +287,7 @@
         </div>
       </div>
       <div class="row">
-        <label>Shadow opacity</label>
+        <label>Background opacity</label>
         <div class="offset-row">
           <button class="offset-btn" id="opMinus">&minus;</button>
           <div class="offset-val" id="opVal">30%</div>
@@ -323,32 +295,43 @@
         </div>
       </div>
       <div class="row">
-        <label>Shadow box</label>
+        <label>Background</label>
         <input type="checkbox" class="toggle" id="cbShadow">
       </div>
       <div class="row">
-        <label>Subtitle outline</label>
+        <label>Outline</label>
         <input type="checkbox" class="toggle" id="cbOutline">
       </div>
       <div class="row">
-        <label>Split subs</label>
+        <label>Side by side</label>
         <input type="checkbox" class="toggle" id="cbSplit">
       </div>
       <div class="row">
-        <label>Lock subs</label>
+        <label>Lock</label>
         <input type="checkbox" class="toggle" id="cbLock">
+      </div>
+      <!-- Colors -->
+      <div class="row" style="margin-top:6px;">
+        <label class="stitle-inline ta">Sub A color</label>
+        <button type="button" class="color-preset" data-track="a" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button type="button" class="color-preset" data-track="a" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
+        <button type="button" class="color-preset" data-track="a" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
+        <button type="button" class="color-preset" data-track="a" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
+      </div>
+      <div class="row">
+        <label class="stitle-inline tb">Sub B color</label>
+        <button type="button" class="color-preset" data-track="b" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button type="button" class="color-preset" data-track="b" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
+        <button type="button" class="color-preset" data-track="b" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
+        <button type="button" class="color-preset" data-track="b" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
       </div>
     </div>
 
     <!-- Options -->
     <div class="section">
       <div class="stitle">Options</div>
-      <div class="row">
-        <label>Auto skip intro</label>
-        <input type="checkbox" class="toggle" id="cbAutoSkip">
-      </div>
       <div class="row" style="margin-top:8px">
-        <button class="btn" id="btnReset" style="background:rgba(255,80,80,0.15); border-color:rgba(255,80,80,0.3); color:#ff8888;">&#10227; Reset Settings</button>
+        <button class="btn" id="btnReset" style="background:rgba(255,80,80,0.15); border-color:rgba(255,80,80,0.3); color:#ff8888;">&#10227; Reset Layout</button>
       </div>
     </div>
     <div class="scroll-hint" id="scrollHint">Scroll for more settings</div>
@@ -575,6 +558,12 @@
 
     // Sub A/B dropdowns
     if (!skip) {
+      var dp = s.defaultPair || {};
+      var defSet = {};
+      if (dp.a) defSet[dp.a] = true;
+      if (dp.b) defSet[dp.b] = true;
+      function _pfx(code, cap) { return (defSet[code] ? '\u2605 ' : '') + (cap ? '\u2713 ' : ''); }
+
       for (var t of ['a', 'b']) {
         var sel = document.getElementById(t === 'a' ? 'trackA' : 'trackB');
         var activeLang = s.state && s.state.subs && s.state.subs[t] ? s.state.subs[t].language : '';
@@ -593,21 +582,21 @@
             if (seen[code]) continue;
             seen[code] = true;
             var isCaptured = captured.some(function(c) { return c.lang === code; });
-            opts.push({ value: code, label: (isCaptured ? '\u2713 ' : '') + label });
+            opts.push({ value: code, label: _pfx(code, isCaptured) + label });
           }
         } else {
           for (var i = 0; i < avail.length; i++) {
             var a = avail[i];
             if (seen[a.language]) continue;
             seen[a.language] = true;
-            opts.push({ value: a.language, label: (a.captured ? '\u2713 ' : '') + a.label });
+            opts.push({ value: a.language, label: _pfx(a.language, a.captured) + a.label });
           }
         }
 
         buildOptions(sel, opts, activeLang);
         if (!sel.value && activeLang) {
           for (var j = 0; j < sel.options.length; j++) {
-            if (sel.options[j].textContent.replace(/^\u2713\s*/, '').trim() === activeLang) {
+            if (sel.options[j].textContent.replace(/^[\u2605\u2713]\s*/g, '').trim() === activeLang) {
               sel.value = sel.options[j].value;
               break;
             }
@@ -615,12 +604,6 @@
         }
       }
     }
-
-    // Offsets
-    var offA = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.offset || 0) : 0;
-    var offB = (s.state && s.state.settings && s.state.settings.b) ? (s.state.settings.b.offset || 0) : 0;
-    document.getElementById('offsetAVal').textContent = offA.toFixed(1) + 's';
-    document.getElementById('offsetBVal').textContent = offB.toFixed(1) + 's';
 
     // Font size
     var fs = (s.state && s.state.settings && s.state.settings.a) ? (s.state.settings.a.fontSize || 36) : 36;
@@ -709,22 +692,6 @@
     send({ type: 'SAVE_DEFAULT_PAIR' });
   });
 
-  // Offset buttons
-  function adjustOffset(track, delta) {
-    if (!state || !state.state || !state.state.settings) return;
-    var cur = state.state.settings[track].offset || 0;
-    var next = Math.round((cur + delta) * 10) / 10;
-    next = Math.max(-10, Math.min(10, next));
-    state.state.settings[track].offset = next;
-    document.getElementById(track === 'a' ? 'offsetAVal' : 'offsetBVal').textContent = next.toFixed(1) + 's';
-    send({ type: 'SET_SUB_OFFSET', track: track, value: next });
-  }
-
-  document.getElementById('offsetAMinus').addEventListener('click', function() { adjustOffset('a', -0.1); });
-  document.getElementById('offsetAPlus').addEventListener('click', function() { adjustOffset('a', 0.1); });
-  document.getElementById('offsetBMinus').addEventListener('click', function() { adjustOffset('b', -0.1); });
-  document.getElementById('offsetBPlus').addEventListener('click', function() { adjustOffset('b', 0.1); });
-
   // Font size buttons
   function adjustFontSize(delta) {
     if (!state || !state.state || !state.state.settings) return;
@@ -739,12 +706,8 @@
   document.getElementById('fsMinus').addEventListener('click', function() { adjustFontSize(-2); });
   document.getElementById('fsPlus').addEventListener('click', function() { adjustFontSize(2); });
 
-  // Long-press repeat for offset/size buttons
+  // Long-press repeat for size buttons
   var repeatBtns = [
-    ['offsetAMinus', function() { adjustOffset('a', -0.1); }],
-    ['offsetAPlus',  function() { adjustOffset('a', 0.1); }],
-    ['offsetBMinus', function() { adjustOffset('b', -0.1); }],
-    ['offsetBPlus',  function() { adjustOffset('b', 0.1); }],
     ['fsMinus',      function() { adjustFontSize(-2); }],
     ['fsPlus',       function() { adjustFontSize(2); }],
   ];
