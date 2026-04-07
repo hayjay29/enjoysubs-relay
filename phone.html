@@ -447,6 +447,33 @@
 
   try { localStorage.setItem('enkosubs_remote_room', room); } catch(_) {}
 
+  var THEMES = {
+    'navy-gold': { bg:'#1A1F36', card:'#242B45', accent:'#F6B93B', border:'#2D3A5C', text:'#E8E6F0', muted:'#8B8FA8', accentText:'#1A1F36' },
+    'midnight-teal': { bg:'#0F1923', card:'#172A3A', accent:'#34D399', border:'#1E3044', text:'#E0EAF0', muted:'#6B8FA8', accentText:'#0F1923' },
+    'soft-charcoal': { bg:'#1A1A1E', card:'#252528', accent:'#E05050', border:'#2E2E34', text:'#EAEAEA', muted:'#888890', accentText:'#FFFFFF' }
+  };
+  var _currentTheme = '';
+  function applyTheme(name) {
+    if (name === _currentTheme) return;
+    _currentTheme = name;
+    var t = THEMES[name] || THEMES['navy-gold'];
+    var b = document.body;
+    b.style.setProperty('--es-bg', t.bg);
+    b.style.setProperty('--es-card', t.card);
+    b.style.setProperty('--es-accent', t.accent);
+    b.style.setProperty('--es-border', t.border);
+    b.style.setProperty('--es-text', t.text);
+    b.style.setProperty('--es-muted', t.muted);
+    b.style.setProperty('--es-accent-text', t.accentText);
+    // Update select arrow SVGs
+    var enc = encodeURIComponent(t.accent);
+    var svg = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='" + enc + "'/%3E%3C/svg%3E\")";
+    document.querySelectorAll('select').forEach(function(sel) { sel.style.backgroundImage = svg; });
+    // Update header bg
+    var hdr = document.querySelector('.header');
+    if (hdr) hdr.style.background = t.accent;
+  }
+
   var ws = null;
   var connected = false;
   var state = null;
@@ -583,6 +610,9 @@
     if (!state) return;
     var s = state;
     var skip = recentlyInteracted();
+
+    // Theme
+    if (s.theme) applyTheme(s.theme);
 
     // Audio
     if (!skip) {
