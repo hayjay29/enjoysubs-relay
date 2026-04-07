@@ -116,13 +116,6 @@
   .btn:active { background: rgba(52,87,166,0.4); }
   .btn-swap { background: rgba(52,87,166,0.2); border-color: rgba(52,87,166,0.4); font-size: 14px; }
 
-  .color-toggle {
-    width: 32px; height: 26px; border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.5);
-    cursor: pointer; padding: 0; -webkit-tap-highlight-color: transparent;
-  }
-  .color-dropdown { display: none; align-items: center; gap: 8px; padding: 6px 0; }
-  .color-dropdown.open { display: flex; }
   .color-preset {
     width: 28px; height: 28px; border-radius: 50%;
     border: 2px solid transparent; cursor: pointer;
@@ -234,7 +227,7 @@
 <body>
 
 <div class="header">
-  <h1>EnjoySubs Remote <span style="font-size:10px; color:#3cb371; font-weight:400;">v3</span></h1>
+  <h1>EnjoySubs Remote <span style="font-size:10px; color:#3cb371; font-weight:400;">v4</span></h1>
   <div class="status-dot" id="statusDot"></div>
   <span class="status-text" id="statusText">Connecting...</span>
   <button class="disconnect-btn" id="disconnectBtn" title="Disconnect and forget session" style="display:none;">✕</button>
@@ -296,25 +289,17 @@
     <div class="section">
       <div class="row">
         <label class="stitle-inline ta">Sub A color</label>
-        <button type="button" class="color-toggle" id="colorAToggle" style="background:#ffffff"></button>
-      </div>
-      <div class="color-dropdown" id="colorADropdown" data-track="a">
-        <button type="button" class="color-preset" data-color="#ffffff" style="background:#ffffff" title="White"></button>
-        <button type="button" class="color-preset" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
-        <button type="button" class="color-preset" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
-        <button type="button" class="color-preset" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
-        <input type="color" id="colorA" value="#ffffff" title="Custom">
+        <button type="button" class="color-preset" data-track="a" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button type="button" class="color-preset" data-track="a" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
+        <button type="button" class="color-preset" data-track="a" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
+        <button type="button" class="color-preset" data-track="a" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
       </div>
       <div class="row" style="margin-top:6px">
         <label class="stitle-inline tb">Sub B color</label>
-        <button type="button" class="color-toggle" id="colorBToggle" style="background:#FFE066"></button>
-      </div>
-      <div class="color-dropdown" id="colorBDropdown" data-track="b">
-        <button type="button" class="color-preset" data-color="#ffffff" style="background:#ffffff" title="White"></button>
-        <button type="button" class="color-preset" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
-        <button type="button" class="color-preset" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
-        <button type="button" class="color-preset" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
-        <input type="color" id="colorB" value="#FFE066" title="Custom">
+        <button type="button" class="color-preset" data-track="b" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button type="button" class="color-preset" data-track="b" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
+        <button type="button" class="color-preset" data-track="b" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
+        <button type="button" class="color-preset" data-track="b" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
       </div>
     </div>
 
@@ -565,9 +550,7 @@
   }
 
   function updatePresetActive(track, color) {
-    var row = document.querySelector('.color-dropdown[data-track="' + track + '"]');
-    if (!row) return;
-    row.querySelectorAll('.color-preset').forEach(function(b) {
+    document.querySelectorAll('.color-preset[data-track="' + track + '"]').forEach(function(b) {
       b.classList.toggle('active', b.dataset.color.toLowerCase() === color.toLowerCase());
     });
   }
@@ -645,16 +628,8 @@
 
     // Colors
     if (!skip && s.state && s.state.settings) {
-      if (s.state.settings.a.fontColor) {
-        document.getElementById('colorA').value = s.state.settings.a.fontColor;
-        document.getElementById('colorAToggle').style.backgroundColor = s.state.settings.a.fontColor;
-        updatePresetActive('a', s.state.settings.a.fontColor);
-      }
-      if (s.state.settings.b.fontColor) {
-        document.getElementById('colorB').value = s.state.settings.b.fontColor;
-        document.getElementById('colorBToggle').style.backgroundColor = s.state.settings.b.fontColor;
-        updatePresetActive('b', s.state.settings.b.fontColor);
-      }
+      if (s.state.settings.a.fontColor) updatePresetActive('a', s.state.settings.a.fontColor);
+      if (s.state.settings.b.fontColor) updatePresetActive('b', s.state.settings.b.fontColor);
     }
 
     // Style toggles & sliders
@@ -787,30 +762,11 @@
     el.addEventListener('touchcancel', clear);
   });
 
-  // ── Color pickers + presets ─────────────────────────────────────
-  var colorMap = {
-    a: { input: 'colorA', toggle: 'colorAToggle', dropdown: 'colorADropdown' },
-    b: { input: 'colorB', toggle: 'colorBToggle', dropdown: 'colorBDropdown' }
-  };
-  ['a', 'b'].forEach(function(track) {
-    var m = colorMap[track];
-    document.getElementById(m.toggle).addEventListener('click', function() {
-      document.getElementById(m.dropdown).classList.toggle('open');
-    });
-    document.getElementById(m.input).addEventListener('input', function() {
-      document.getElementById(m.toggle).style.backgroundColor = this.value;
-      send({ type: 'SET_COLOR', track: track, color: this.value });
-      updatePresetActive(track, this.value);
-    });
-  });
+  // ── Color presets ───────────────────────────────────────────────
   document.querySelectorAll('.color-preset').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var dropdown = btn.closest('.color-dropdown');
-      var track = dropdown.dataset.track;
+      var track = btn.dataset.track;
       var color = btn.dataset.color;
-      var m = colorMap[track];
-      document.getElementById(m.input).value = color;
-      document.getElementById(m.toggle).style.backgroundColor = color;
       send({ type: 'SET_COLOR', track: track, color: color });
       updatePresetActive(track, color);
     });
