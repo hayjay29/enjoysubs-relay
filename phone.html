@@ -304,10 +304,6 @@
           <span class="p-toggle-slider"></span>
         </label>
       </div>
-      <!-- Save pair as default -->
-      <div style="margin-top:10px;">
-        <button class="btn" id="btnSaveDefault" style="width:100%; font-size:11px;">&#9733; Save pair as default</button>
-      </div>
     </div>
 
     <!-- Style -->
@@ -627,11 +623,7 @@
 
     // Sub A/B
     if (!skip) {
-      var dp = s.defaultPair || {};
-      var defSet = {};
-      if (dp.a) defSet[dp.a] = true;
-      if (dp.b) defSet[dp.b] = true;
-      function _pfx(code, cap) { return (defSet[code] ? '\u2605 ' : '') + (cap ? '\u2713 ' : ''); }
+      function _pfx(code, cap) { return cap ? '\u2713 ' : ''; }
 
       for (var t of ['a', 'b']) {
         var sel = document.getElementById(t === 'a' ? 'trackA' : 'trackB');
@@ -749,9 +741,6 @@
   });
   document.getElementById('btnSwap').addEventListener('click', function() {
     markInteraction(); send({ type: 'SWAP_SUBS' });
-  });
-  document.getElementById('btnSaveDefault').addEventListener('click', function() {
-    send({ type: 'SAVE_DEFAULT_PAIR' });
   });
 
   // Font size
