@@ -18,7 +18,7 @@ const server = http.createServer((req, res) => {
     const filePath = path.join(__dirname, 'phone.html');
     fs.readFile(filePath, (err, data) => {
       if (err) { res.writeHead(500); res.end('Error'); return; }
-      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
       res.end(data);
     });
     return;
@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
     const filePath = path.join(__dirname, 'privacy-policy.html');
     fs.readFile(filePath, (err, data) => {
       if (err) { res.writeHead(500); res.end('Error'); return; }
-      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
       res.end(data);
     });
     return;
