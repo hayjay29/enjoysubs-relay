@@ -116,6 +116,21 @@
   .btn:active { background: rgba(52,87,166,0.4); }
   .btn-swap { background: rgba(52,87,166,0.2); border-color: rgba(52,87,166,0.4); font-size: 14px; }
 
+  .color-toggle {
+    width: 32px; height: 26px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer; padding: 0; -webkit-tap-highlight-color: transparent;
+  }
+  .color-dropdown { display: none; align-items: center; gap: 8px; padding: 6px 0; }
+  .color-dropdown.open { display: flex; }
+  .color-preset {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid transparent; cursor: pointer;
+    padding: 0; flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+  }
+  .color-preset:active { opacity: 0.7; }
+  .color-preset.active { border-color: #fff; }
+
   .size-row { display: flex; align-items: center; gap: 12px; }
   .size-btn {
     width: 50px; height: 44px;
@@ -219,7 +234,7 @@
 <body>
 
 <div class="header">
-  <h1>EnjoySubs Remote</h1>
+  <h1>EnjoySubs Remote <span style="font-size:10px; color:#3cb371; font-weight:400;">v3</span></h1>
   <div class="status-dot" id="statusDot"></div>
   <span class="status-text" id="statusText">Connecting...</span>
   <button class="disconnect-btn" id="disconnectBtn" title="Disconnect and forget session" style="display:none;">✕</button>
@@ -255,9 +270,12 @@
       </div>
     </div>
 
-    <!-- Swap -->
+    <!-- Swap / Save default -->
     <div class="section" style="padding:4px 18px;">
-      <button class="btn btn-swap" id="btnSwap">&#8645; Swap A / B</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-swap" id="btnSwap" style="flex:1">&#8645; Swap A / B</button>
+        <button class="btn" id="btnSaveDefault" style="flex:1">&#9733; Save as default</button>
+      </div>
     </div>
 
     <!-- Sub B -->
@@ -274,15 +292,29 @@
       </div>
     </div>
 
-    <!-- Sub A Color -->
+    <!-- Colors -->
     <div class="section">
       <div class="row">
         <label class="stitle-inline ta">Sub A color</label>
-        <input type="color" id="colorA" value="#ffffff">
+        <button type="button" class="color-toggle" id="colorAToggle" style="background:#ffffff"></button>
       </div>
-      <div class="row">
+      <div class="color-dropdown" id="colorADropdown" data-track="a">
+        <button type="button" class="color-preset" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button type="button" class="color-preset" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
+        <button type="button" class="color-preset" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
+        <button type="button" class="color-preset" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
+        <input type="color" id="colorA" value="#ffffff" title="Custom">
+      </div>
+      <div class="row" style="margin-top:6px">
         <label class="stitle-inline tb">Sub B color</label>
-        <input type="color" id="colorB" value="#00e0c0">
+        <button type="button" class="color-toggle" id="colorBToggle" style="background:#FFE066"></button>
+      </div>
+      <div class="color-dropdown" id="colorBDropdown" data-track="b">
+        <button type="button" class="color-preset" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button type="button" class="color-preset" data-color="#FFE066" style="background:#FFE066" title="Yellow"></button>
+        <button type="button" class="color-preset" data-color="#00e0c0" style="background:#00e0c0" title="Cyan"></button>
+        <button type="button" class="color-preset" data-color="#f8a5d4" style="background:#f8a5d4" title="Pink"></button>
+        <input type="color" id="colorB" value="#FFE066" title="Custom">
       </div>
     </div>
 
@@ -330,9 +362,8 @@
         <label>Auto skip intro</label>
         <input type="checkbox" class="toggle" id="cbAutoSkip">
       </div>
-      <div class="row">
-        <label>Disable extension</label>
-        <input type="checkbox" class="toggle" id="cbDisabled">
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="btnReset" style="background:rgba(255,80,80,0.15); border-color:rgba(255,80,80,0.3); color:#ff8888;">&#10227; Reset Settings</button>
       </div>
     </div>
     <div class="scroll-hint" id="scrollHint">Scroll for more settings</div>
@@ -533,6 +564,14 @@
     sel.value = currentVal || '';
   }
 
+  function updatePresetActive(track, color) {
+    var row = document.querySelector('.color-dropdown[data-track="' + track + '"]');
+    if (!row) return;
+    row.querySelectorAll('.color-preset').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.color.toLowerCase() === color.toLowerCase());
+    });
+  }
+
   function renderUI() {
     if (!state) return;
     var s = state;
@@ -606,8 +645,16 @@
 
     // Colors
     if (!skip && s.state && s.state.settings) {
-      if (s.state.settings.a.fontColor) document.getElementById('colorA').value = s.state.settings.a.fontColor;
-      if (s.state.settings.b.fontColor) document.getElementById('colorB').value = s.state.settings.b.fontColor;
+      if (s.state.settings.a.fontColor) {
+        document.getElementById('colorA').value = s.state.settings.a.fontColor;
+        document.getElementById('colorAToggle').style.backgroundColor = s.state.settings.a.fontColor;
+        updatePresetActive('a', s.state.settings.a.fontColor);
+      }
+      if (s.state.settings.b.fontColor) {
+        document.getElementById('colorB').value = s.state.settings.b.fontColor;
+        document.getElementById('colorBToggle').style.backgroundColor = s.state.settings.b.fontColor;
+        updatePresetActive('b', s.state.settings.b.fontColor);
+      }
     }
 
     // Style toggles & sliders
@@ -617,7 +664,6 @@
       document.getElementById('cbSplit').checked = !!s.state.splitSubsEnabled;
       document.getElementById('cbLock').checked = !!s.state.lockSubtitlePosition;
       document.getElementById('cbAutoSkip').checked = !!s.state.autoSkipIntro;
-      document.getElementById('cbDisabled').checked = !!s.state.extensionDisabled;
       if (s.state.settings && s.state.settings.a) {
         var op = s.state.settings.a.opacity != null ? s.state.settings.a.opacity : 30;
         document.getElementById('opVal').textContent = op + '%';
@@ -684,6 +730,9 @@
     markInteraction();
     send({ type: 'SWAP_SUBS' });
   });
+  document.getElementById('btnSaveDefault').addEventListener('click', function() {
+    send({ type: 'SAVE_DEFAULT_PAIR' });
+  });
 
   // Offset buttons
   function adjustOffset(track, delta) {
@@ -738,12 +787,33 @@
     el.addEventListener('touchcancel', clear);
   });
 
-  // ── Color pickers ──────────────────────────────────────────────
-  document.getElementById('colorA').addEventListener('input', function() {
-    send({ type: 'SET_COLOR', track: 'a', color: this.value });
+  // ── Color pickers + presets ─────────────────────────────────────
+  var colorMap = {
+    a: { input: 'colorA', toggle: 'colorAToggle', dropdown: 'colorADropdown' },
+    b: { input: 'colorB', toggle: 'colorBToggle', dropdown: 'colorBDropdown' }
+  };
+  ['a', 'b'].forEach(function(track) {
+    var m = colorMap[track];
+    document.getElementById(m.toggle).addEventListener('click', function() {
+      document.getElementById(m.dropdown).classList.toggle('open');
+    });
+    document.getElementById(m.input).addEventListener('input', function() {
+      document.getElementById(m.toggle).style.backgroundColor = this.value;
+      send({ type: 'SET_COLOR', track: track, color: this.value });
+      updatePresetActive(track, this.value);
+    });
   });
-  document.getElementById('colorB').addEventListener('input', function() {
-    send({ type: 'SET_COLOR', track: 'b', color: this.value });
+  document.querySelectorAll('.color-preset').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var dropdown = btn.closest('.color-dropdown');
+      var track = dropdown.dataset.track;
+      var color = btn.dataset.color;
+      var m = colorMap[track];
+      document.getElementById(m.input).value = color;
+      document.getElementById(m.toggle).style.backgroundColor = color;
+      send({ type: 'SET_COLOR', track: track, color: color });
+      updatePresetActive(track, color);
+    });
   });
 
   // ── Style toggles ────────────────────────────────────────────
@@ -774,8 +844,8 @@
   document.getElementById('cbAutoSkip').addEventListener('change', function() {
     send({ type: 'SET_AUTO_SKIP', value: this.checked });
   });
-  document.getElementById('cbDisabled').addEventListener('change', function() {
-    send({ type: 'SET_DISABLED', value: this.checked });
+  document.getElementById('btnReset').addEventListener('click', function() {
+    send({ type: 'RESET_LAYOUT' });
   });
 
   // ── Playback controls ──────────────────────────────────────────
