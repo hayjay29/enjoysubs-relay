@@ -261,7 +261,7 @@
 <div class="header">
   <h1>EnjoySubs Remote</h1>
   <div class="status-dot" id="statusDot"></div>
-  <span class="status-text" id="statusText">Connecting...</span>
+  <span class="status-text" id="statusText" style="display:none;"></span>
   <button class="disconnect-btn" id="disconnectBtn" title="Disconnect and forget session" style="display:none;">&#10005;</button>
 </div>
 
@@ -460,7 +460,12 @@
 
   function setStatus(s) {
     dotEl.className = 'status-dot' + (s === 'connected' ? ' connected' : s === 'error' ? ' error' : '');
-    textEl.textContent = s === 'connected' ? 'Connected' : s === 'error' ? 'Disconnected' : 'Connecting...';
+    if (s === 'connected') {
+      textEl.style.display = 'none';
+    } else {
+      textEl.style.display = '';
+      textEl.textContent = s === 'error' ? 'Disconnected' : 'Connecting...';
+    }
   }
 
   var connectMsg = document.querySelector('.connect-screen p');
