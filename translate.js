@@ -38,9 +38,15 @@ function pickBestSource(targetLang, availableLangs) {
 // ── API Routing ────────────────────────────────────────────────
 const ASIAN_LANGS = new Set(["KO", "JA", "ZH", "ZH-TW", "AR", "TH", "VI", "ID"]);
 
+// When DeepL reports quota exhaustion (456), remember it and skip DeepL until
+// this timestamp so every request doesn't waste a round-trip. Reset monthly by
+// DeepL — we use 1h as a conservative backoff in case it's a transient issue.
+let _deeplDisabledUntil = 0;
+
 function chooseAPI(sourceLang, targetLang) {
   if (ASIAN_LANGS.has(targetLang) || ASIAN_LANGS.has(sourceLang)) return "google";
   if (!process.env.DEEPL_API_KEY) return "google";
+  if (Date.now() < _deeplDisabledUntil) return "google";
   return "deepl";
 }
 
@@ -123,7 +129,11 @@ async function translateBatch(cues, sourceLang, targetLang, api) {
   const allLines = [];
 
   cues.forEach((cue, ci) => {
-    const lines = cue.text.split('\n');
+    // Client stores line breaks as <br> (to survive the nowrap CSS), so
+    // normalize them to \n before splitting so multi-line cues get
+    // translated line-by-line.
+    const normalized = (cue.text || '').replace(/<br\s*\/?>/gi, '\n');
+    const lines = normalized.split('\n');
     lines.forEach((line, li) => {
       lineMap.push({ ci, li, totalLines: lines.length });
       allLines.push(line);
@@ -131,10 +141,30 @@ async function translateBatch(cues, sourceLang, targetLang, api) {
   });
 
   let translatedLines;
+  let apiUsed = api;
   if (api === "google") {
     translatedLines = await googleTranslate(allLines, sourceLang, targetLang);
   } else {
-    translatedLines = await deeplTranslate(allLines, sourceLang, targetLang);
+    try {
+      translatedLines = await deeplTranslate(allLines, sourceLang, targetLang);
+    } catch (err) {
+      // DeepL can fail for a few reasons we should recover from transparently:
+      //   456 = quota exceeded for the month
+      //   400 = target_lang not supported (DeepL has a smaller language set than Google)
+      //   403 = auth issue (bad/expired key)
+      // In any of these, fall through to Google so the user still gets a translation.
+      const msg = err && err.message ? err.message : '';
+      const recoverable = /\b(456|400|403)\b/.test(msg) || /Quota|not supported|unsupported/i.test(msg);
+      if (!recoverable) throw err;
+      // On quota exhaustion, skip DeepL entirely for the next hour
+      if (/\b456\b/.test(msg) || /Quota/i.test(msg)) {
+        _deeplDisabledUntil = Date.now() + 60 * 60 * 1000;
+        console.warn('[translate] DeepL quota exceeded — disabling DeepL for 1h');
+      }
+      console.warn('[translate] DeepL failed, falling back to Google:', msg);
+      translatedLines = await googleTranslate(allLines, sourceLang, targetLang);
+      apiUsed = 'google';
+    }
   }
 
   // Reassemble: group translated lines back into cues with \n
