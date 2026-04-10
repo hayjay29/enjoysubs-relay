@@ -92,7 +92,8 @@ async function deeplTranslate(texts, sourceLang, targetLang) {
   const key = process.env.DEEPL_API_KEY;
   if (!key) throw new Error("DEEPL_API_KEY not set");
 
-  const response = await fetch("https://api.deepl.com/v2/translate", {
+  const baseUrl = key.endsWith(':fx') ? 'https://api-free.deepl.com' : 'https://api.deepl.com';
+  const response = await fetch(baseUrl + "/v2/translate", {
     method: "POST",
     headers: {
       Authorization: `DeepL-Auth-Key ${key}`,
