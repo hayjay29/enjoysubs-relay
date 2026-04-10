@@ -44,6 +44,9 @@ const ASIAN_LANGS = new Set(["KO", "JA", "ZH", "ZH-TW", "AR", "TH", "VI", "ID"])
 let _deeplDisabledUntil = 0;
 
 function chooseAPI(sourceLang, targetLang) {
+  // DeepL requires an explicit source language; if the client couldn't
+  // determine one (DOM-scraped fallback), force Google auto-detection.
+  if (!sourceLang) return "google";
   if (ASIAN_LANGS.has(targetLang) || ASIAN_LANGS.has(sourceLang)) return "google";
   if (!process.env.DEEPL_API_KEY) return "google";
   if (Date.now() < _deeplDisabledUntil) return "google";
@@ -56,7 +59,9 @@ async function googleTranslate(texts, sourceLang, targetLang) {
   if (!key) throw new Error("GOOGLE_TRANSLATE_API_KEY not set");
 
   const BATCH_LIMIT = 128;
-  const src = sourceLang.split("-")[0].toLowerCase();
+  // sourceLang may be empty when the client only has a DOM-scraped netflix-live
+  // capture — in that case let Google auto-detect the source language.
+  const src = sourceLang ? sourceLang.split("-")[0].toLowerCase() : "";
   const tgt = targetLang.split("-")[0].toLowerCase();
 
   // Split into batches of 128 (Google API limit)
@@ -67,17 +72,14 @@ async function googleTranslate(texts, sourceLang, targetLang) {
 
   const results = [];
   for (const batch of batches) {
+    const body = { q: batch, target: tgt, format: "text" };
+    if (src) body.source = src; // omit to trigger auto-detection
     const response = await fetch(
       `https://translation.googleapis.com/language/translate/v2?key=${key}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          q: batch,
-          source: src,
-          target: tgt,
-          format: "text",
-        }),
+        body: JSON.stringify(body),
       }
     );
 
@@ -245,9 +247,11 @@ async function handleTranslate(req, res, db) {
              res.end(JSON.stringify({ error: "Missing required fields" }));
     }
 
-    // Use the actual language of the cues the client sent, not proximity-picked
-    const sourceLang = subALang || pickBestSource(targetLang, availableLangs);
-    const cacheKey = `${showId}_${episodeId}_${sourceLang}_${targetLang}`;
+    // Use the actual language of the cues the client sent, not proximity-picked.
+    // May be empty string when the client only has a DOM-scraped netflix-live
+    // capture — in that case we force Google with auto-detection.
+    const sourceLang = subALang || pickBestSource(targetLang, availableLangs) || "";
+    const cacheKey = `${showId}_${episodeId}_${sourceLang || 'auto'}_${targetLang}`;
 
     // 1. Check cache
     const cached = await db.collection("translations").findOne({ cache_key: cacheKey });
