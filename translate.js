@@ -115,8 +115,11 @@ async function deeplTranslate(texts, sourceLang, targetLang) {
 }
 
 // ── Batch Translation (timestamps are sacred) ──────────────────
+const LINE_PLACEHOLDER = ' |||BR||| ';
+
 async function translateBatch(cues, sourceLang, targetLang, api) {
-  const texts = cues.map(c => c.text);
+  // Replace newlines with placeholder so translation APIs preserve line structure
+  const texts = cues.map(c => c.text.replace(/\n/g, LINE_PLACEHOLDER));
 
   let translatedTexts;
   if (api === "google") {
@@ -125,8 +128,9 @@ async function translateBatch(cues, sourceLang, targetLang, api) {
     translatedTexts = await deeplTranslate(texts, sourceLang, targetLang);
   }
 
+  // Restore newlines from placeholder
   return cues.map((cue, i) => ({
-    text: translatedTexts[i] || cue.text,
+    text: (translatedTexts[i] || cue.text).replace(/\s*\|\|\|BR\|\|\|\s*/g, '\n'),
     begin: cue.begin,
     end: cue.end,
   }));
