@@ -167,7 +167,8 @@ async function handleTranslate(req, res, db) {
              res.end(JSON.stringify({ error: "Missing required fields" }));
     }
 
-    const sourceLang = pickBestSource(targetLang, availableLangs);
+    // Use the actual language of the cues the client sent, not proximity-picked
+    const sourceLang = subALang || pickBestSource(targetLang, availableLangs);
     const cacheKey = `${showId}_${episodeId}_${sourceLang}_${targetLang}`;
 
     // 1. Check cache
