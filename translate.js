@@ -128,12 +128,31 @@ async function translateBatch(cues, sourceLang, targetLang, api) {
     translatedTexts = await deeplTranslate(texts, sourceLang, targetLang);
   }
 
-  // Restore newlines from placeholder
+  // Restore newlines from placeholder, then smart-break long lines
   return cues.map((cue, i) => ({
-    text: (translatedTexts[i] || cue.text).replace(/\s*\|\|\|BR\|\|\|\s*/g, '\n'),
+    text: smartBreak((translatedTexts[i] || cue.text).replace(/\s*\|\|\|BR\|\|\|\s*/g, '\n')),
     begin: cue.begin,
     end: cue.end,
   }));
+}
+
+// Break long single-line text into two lines near the middle at a natural point
+function smartBreak(text) {
+  if (text.includes('\n')) return text; // already has line breaks
+  if (text.length < 40) return text;   // short enough for one line
+  const mid = Math.floor(text.length / 2);
+  // Find the nearest space to the middle
+  let bestPos = -1, bestDist = Infinity;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === ' ' || text[i] === ',' || text[i] === '.') {
+      const dist = Math.abs(i - mid);
+      if (dist < bestDist) { bestDist = dist; bestPos = i; }
+    }
+  }
+  if (bestPos > 0 && bestPos < text.length - 1) {
+    return text.slice(0, bestPos + 1).trim() + '\n' + text.slice(bestPos + 1).trim();
+  }
+  return text;
 }
 
 // ── Chunked Translation (3 parallel chunks for long content) ───
