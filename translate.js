@@ -40,6 +40,7 @@ const ASIAN_LANGS = new Set(["KO", "JA", "ZH", "ZH-TW", "AR", "TH", "VI", "ID"])
 
 function chooseAPI(sourceLang, targetLang) {
   if (ASIAN_LANGS.has(targetLang) || ASIAN_LANGS.has(sourceLang)) return "google";
+  if (!process.env.DEEPL_API_KEY) return "google";
   return "deepl";
 }
 
@@ -48,27 +49,42 @@ async function googleTranslate(texts, sourceLang, targetLang) {
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
   if (!key) throw new Error("GOOGLE_TRANSLATE_API_KEY not set");
 
-  const response = await fetch(
-    `https://translation.googleapis.com/language/translate/v2?key=${key}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        q: texts,
-        source: sourceLang.split("-")[0].toLowerCase(),
-        target: targetLang.split("-")[0].toLowerCase(),
-        format: "text",
-      }),
-    }
-  );
+  const BATCH_LIMIT = 128;
+  const src = sourceLang.split("-")[0].toLowerCase();
+  const tgt = targetLang.split("-")[0].toLowerCase();
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Google Translate API error ${response.status}: ${err}`);
+  // Split into batches of 128 (Google API limit)
+  const batches = [];
+  for (let i = 0; i < texts.length; i += BATCH_LIMIT) {
+    batches.push(texts.slice(i, i + BATCH_LIMIT));
   }
 
-  const data = await response.json();
-  return data.data.translations.map(t => t.translatedText);
+  const results = [];
+  for (const batch of batches) {
+    const response = await fetch(
+      `https://translation.googleapis.com/language/translate/v2?key=${key}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          q: batch,
+          source: src,
+          target: tgt,
+          format: "text",
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Google Translate API error ${response.status}: ${err}`);
+    }
+
+    const data = await response.json();
+    results.push(...data.data.translations.map(t => t.translatedText));
+  }
+
+  return results;
 }
 
 // ── DeepL Translate ────────────────────────────────────────────
