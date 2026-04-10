@@ -10,6 +10,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "mongodb": "^6.12.0",
     "ws": "^8.18.0"
   }
 }

@@ -6,8 +6,30 @@ const http = require('http');
 const fs   = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
+const { MongoClient } = require('mongodb');
+const { handleTranslate, purgeShow, ensureIndexes } = require('./translate');
 
 const PORT = process.env.PORT || 9876;
+
+// ── MongoDB ─────────────────────────────────────────────────────
+let db = null;
+
+async function connectMongo() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    console.warn('  [translate] MONGODB_URI not set — AI translation disabled');
+    return;
+  }
+  try {
+    const client = new MongoClient(uri);
+    await client.connect();
+    db = client.db('enjoysubs');
+    await ensureIndexes(db);
+    console.log('  [translate] MongoDB connected');
+  } catch (err) {
+    console.error('  [translate] MongoDB connection failed:', err.message);
+  }
+}
 
 // ── Rooms: map roomCode → Set of { ws, role } ──────────────────
 const rooms = new Map();
@@ -18,7 +40,7 @@ const server = http.createServer((req, res) => {
     const filePath = path.join(__dirname, 'phone.html');
     fs.readFile(filePath, (err, data) => {
       if (err) { res.writeHead(500); res.end('Error'); return; }
-      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
       res.end(data);
     });
     return;
@@ -27,7 +49,7 @@ const server = http.createServer((req, res) => {
     const filePath = path.join(__dirname, 'privacy-policy.html');
     fs.readFile(filePath, (err, data) => {
       if (err) { res.writeHead(500); res.end('Error'); return; }
-      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
       res.end(data);
     });
     return;
@@ -37,6 +59,74 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ ok: true }));
     return;
   }
+
+  // ── CORS preflight for POST endpoints ──
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    });
+    res.end();
+    return;
+  }
+
+  // ── POST /translate — AI subtitle translation ──
+  if (req.method === 'POST' && req.url === '/translate') {
+    if (!db) {
+      res.writeHead(503, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({ error: 'Translation service not available' }));
+      return;
+    }
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(body);
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ error: 'Invalid JSON' }));
+        return;
+      }
+      // Set CORS header before handler
+      const origWriteHead = res.writeHead.bind(res);
+      res.writeHead = (code, headers = {}) => {
+        origWriteHead(code, { ...headers, 'Access-Control-Allow-Origin': '*' });
+      };
+      handleTranslate(req, res, db);
+    });
+    return;
+  }
+
+  // ── POST /purge — compliance removal ──
+  if (req.method === 'POST' && req.url === '/purge') {
+    if (!db) {
+      res.writeHead(503, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({ error: 'Service not available' }));
+      return;
+    }
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { showId } = JSON.parse(body);
+        if (!showId) {
+          res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ error: 'showId required' }));
+          return;
+        }
+        const deleted = await purgeShow(showId, db);
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ deleted }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
   res.writeHead(404);
   res.end('Not found');
 });
@@ -116,10 +206,11 @@ wss.on('connection', (ws) => {
 });
 
 // ── Start ────────────────────────────────────────────────────────
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', async () => {
   console.log('');
   console.log('  EnjoySubs Remote Relay');
   console.log('  ----------------------');
   console.log(`  Listening on port ${PORT}`);
+  await connectMongo();
   console.log('');
 });
