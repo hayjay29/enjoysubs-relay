@@ -115,25 +115,39 @@ async function deeplTranslate(texts, sourceLang, targetLang) {
 }
 
 // ── Batch Translation (timestamps are sacred) ──────────────────
-const LINE_PLACEHOLDER = ' |||BR||| ';
-
 async function translateBatch(cues, sourceLang, targetLang, api) {
-  // Replace newlines with placeholder so translation APIs preserve line structure
-  const texts = cues.map(c => c.text.replace(/\n/g, LINE_PLACEHOLDER));
+  // Split each cue into individual lines, translate each line separately,
+  // then rejoin — preserves the same line count as the source subtitles
+  const lineMap = []; // { cueIndex, lineIndex }
+  const allLines = [];
 
-  let translatedTexts;
+  cues.forEach((cue, ci) => {
+    const lines = cue.text.split('\n');
+    lines.forEach((line, li) => {
+      lineMap.push({ ci, li, totalLines: lines.length });
+      allLines.push(line);
+    });
+  });
+
+  let translatedLines;
   if (api === "google") {
-    translatedTexts = await googleTranslate(texts, sourceLang, targetLang);
+    translatedLines = await googleTranslate(allLines, sourceLang, targetLang);
   } else {
-    translatedTexts = await deeplTranslate(texts, sourceLang, targetLang);
+    translatedLines = await deeplTranslate(allLines, sourceLang, targetLang);
   }
 
-  // Restore newlines from placeholder, then smart-break long lines
-  return cues.map((cue, i) => ({
-    text: smartBreak((translatedTexts[i] || cue.text).replace(/\s*\|\|\|BR\|\|\|\s*/g, '\n')),
-    begin: cue.begin,
-    end: cue.end,
-  }));
+  // Reassemble: group translated lines back into cues with \n
+  const result = cues.map((cue, ci) => ({ text: '', begin: cue.begin, end: cue.end }));
+  for (let i = 0; i < lineMap.length; i++) {
+    const { ci, li } = lineMap[i];
+    const translated = translatedLines[i] || '';
+    if (li === 0) {
+      result[ci].text = smartBreak(translated);
+    } else {
+      result[ci].text += '\n' + smartBreak(translated);
+    }
+  }
+  return result;
 }
 
 // Break long single-line text into two lines near the middle at a natural point
