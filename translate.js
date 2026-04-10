@@ -139,12 +139,20 @@ async function translateBatch(cues, sourceLang, targetLang, api) {
 // Break long single-line text into two lines near the middle at a natural point
 function smartBreak(text) {
   if (text.includes('\n')) return text; // already has line breaks
-  if (text.length < 40) return text;   // short enough for one line
+  // Detect CJK text (Korean, Japanese, Chinese)
+  const isCJK = /[\u3000-\u9fff\uac00-\ud7af\uff00-\uffef]/.test(text);
+  const minLen = isCJK ? 15 : 40;
+  if (text.length < minLen) return text; // short enough for one line
+
   const mid = Math.floor(text.length / 2);
-  // Find the nearest space to the middle
+
+  // 1) Try to break at natural punctuation near the middle
+  const punctuation = isCJK
+    ? [' ', '、', '，', '。', '」', '）', ')', ',', '.', '!', '?', '！', '？']
+    : [' ', ',', '.', ';', '!', '?', ':', '-'];
   let bestPos = -1, bestDist = Infinity;
   for (let i = 0; i < text.length; i++) {
-    if (text[i] === ' ' || text[i] === ',' || text[i] === '.') {
+    if (punctuation.includes(text[i])) {
       const dist = Math.abs(i - mid);
       if (dist < bestDist) { bestDist = dist; bestPos = i; }
     }
@@ -152,6 +160,12 @@ function smartBreak(text) {
   if (bestPos > 0 && bestPos < text.length - 1) {
     return text.slice(0, bestPos + 1).trim() + '\n' + text.slice(bestPos + 1).trim();
   }
+
+  // 2) For CJK with no punctuation, just break at the midpoint
+  if (isCJK && text.length >= minLen) {
+    return text.slice(0, mid) + '\n' + text.slice(mid);
+  }
+
   return text;
 }
 
