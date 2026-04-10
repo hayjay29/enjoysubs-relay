@@ -306,6 +306,27 @@
       </div>
     </div>
 
+    <!-- AI Translation (Pro only, collapsible, starts collapsed) -->
+    <div class="section" id="aiSection" style="display:none;">
+      <button type="button" id="aiToggle" style="background:none; border:none; color:var(--es-muted); font-size:13px; font-weight:700; cursor:pointer; padding:0; width:100%; text-align:left; display:flex; align-items:center; gap:6px;">
+        <span id="aiArrow" style="display:inline-block; transition:transform 0.2s; transform:rotate(-90deg);">&#9660;</span> &#10022; AI Translation
+      </button>
+      <div id="aiBody" style="display:none; padding-top:10px;">
+        <div style="font-size:11px; color:var(--es-muted); margin-bottom:10px;">Translate into languages Netflix doesn't have</div>
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1; min-width:0;">
+            <div class="stitle ta" style="margin-bottom:4px; font-size:11px;">AI Sub A</div>
+            <select id="aiTrackA" style="width:100%; font-size:12px;"></select>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div class="stitle tb" style="margin-bottom:4px; font-size:11px;">AI Sub B</div>
+            <select id="aiTrackB" style="width:100%; font-size:12px;"></select>
+          </div>
+        </div>
+        <div id="aiStatus" style="font-size:11px; color:var(--es-muted); margin-top:6px; min-height:14px;"></div>
+      </div>
+    </div>
+
     <!-- Style -->
     <div class="section">
       <div class="stitle">Style</div>
@@ -655,6 +676,7 @@
         }
 
         buildOptions(sel, opts, activeLang);
+
         if (!sel.value && activeLang) {
           for (var j = 0; j < sel.options.length; j++) {
             if (sel.options[j].textContent.replace(/^[\u2605\u2713]\s*/g, '').trim() === activeLang) {
@@ -686,6 +708,38 @@
       if (s.state.settings && s.state.settings.a) {
         var op = s.state.settings.a.opacity != null ? s.state.settings.a.opacity : 30;
         document.getElementById('opVal').textContent = op;
+      }
+    }
+
+    // AI Translation section
+    var aiSec = document.getElementById('aiSection');
+    if (aiSec) {
+      var aiOpts = s.aiLanguageOptions || [];
+      var aiSt = s.aiState || { a: {}, b: {} };
+      var isPro = s.isPremium || s.trialActive;
+      aiSec.style.display = (isPro && aiOpts.length > 0) ? '' : 'none';
+
+      if (!skip) {
+        for (var ai_t of ['a', 'b']) {
+          var aiSel = document.getElementById(ai_t === 'a' ? 'aiTrackA' : 'aiTrackB');
+          if (!aiSel) continue;
+          var currentAI = (aiSt[ai_t] && aiSt[ai_t].translatedLang) ? aiSt[ai_t].translatedLang : '';
+          var aiItems = [{ value: '', label: '\u2014 Off \u2014' }];
+          for (var oi = 0; oi < aiOpts.length; oi++) {
+            aiItems.push({ value: aiOpts[oi].code, label: aiOpts[oi].name });
+          }
+          buildOptions(aiSel, aiItems, currentAI);
+        }
+      }
+
+      var aiStatusEl = document.getElementById('aiStatus');
+      if (aiStatusEl) {
+        var aiParts = [];
+        for (var ai_t2 of ['a', 'b']) {
+          if (aiSt[ai_t2] && aiSt[ai_t2].translating) aiParts.push((ai_t2 === 'a' ? 'Sub A' : 'Sub B') + ': translating\u2026');
+          else if (aiSt[ai_t2] && aiSt[ai_t2].translatedLang && aiSt[ai_t2].sourceLang) aiParts.push((ai_t2 === 'a' ? 'Sub A' : 'Sub B') + ': from ' + (aiSt[ai_t2].sourceLang || '?'));
+        }
+        aiStatusEl.textContent = aiParts.length ? aiParts.join('  \u00B7  ') : '';
       }
     }
 
@@ -741,6 +795,24 @@
   });
   document.getElementById('btnSwap').addEventListener('click', function() {
     markInteraction(); send({ type: 'SWAP_SUBS' });
+  });
+  // AI Translation toggle
+  var aiToggleBtn = document.getElementById('aiToggle');
+  var aiBodyEl = document.getElementById('aiBody');
+  var aiArrow = document.getElementById('aiArrow');
+  if (aiToggleBtn && aiBodyEl) {
+    aiToggleBtn.addEventListener('click', function() {
+      var open = aiBodyEl.style.display === 'none';
+      aiBodyEl.style.display = open ? '' : 'none';
+      if (aiArrow) aiArrow.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+    });
+  }
+  // AI Translation dropdowns
+  document.getElementById('aiTrackA').addEventListener('change', function() {
+    markInteraction(); send({ type: 'SET_AI_TRACK', track: 'a', language: this.value });
+  });
+  document.getElementById('aiTrackB').addEventListener('change', function() {
+    markInteraction(); send({ type: 'SET_AI_TRACK', track: 'b', language: this.value });
   });
 
   // Font size
