@@ -438,7 +438,6 @@
     <div class="action-row">
       <button class="action-btn" id="btnSkipIntro">Skip Intro</button>
       <button class="action-btn" id="btnNextEp">Next Episode</button>
-      <button class="action-btn" id="btnFullscreen">&#x26F6; Fullscreen</button>
     </div>
   </div>
 
@@ -921,7 +920,6 @@
   document.getElementById('btnMute').addEventListener('click', function() { send({ type: 'TOGGLE_MUTE' }); });
   document.getElementById('btnSkipIntro').addEventListener('click', function() { send({ type: 'SKIP_INTRO' }); });
   document.getElementById('btnNextEp').addEventListener('click', function() { send({ type: 'NEXT_EPISODE' }); });
-  document.getElementById('btnFullscreen').addEventListener('click', function() { send({ type: 'TOGGLE_FULLSCREEN' }); });
 
   // Seek bar
   var seekBar = document.getElementById('seekBar');
