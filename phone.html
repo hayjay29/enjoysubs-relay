@@ -260,6 +260,7 @@
 
 <div class="header">
   <h1>EnjoySubs Remote</h1>
+  <span id="platformBadge" style="display:none; font-size:9px; font-weight:800; padding:2px 7px; border-radius:3px; letter-spacing:0.05em; color:#fff;"></span>
   <div class="status-dot" id="statusDot"></div>
   <span class="status-text" id="statusText" style="display:none;"></span>
   <button class="disconnect-btn" id="disconnectBtn" title="Disconnect and forget session" style="display:none;">&#10005;</button>
@@ -437,6 +438,7 @@
     <div class="action-row">
       <button class="action-btn" id="btnSkipIntro">Skip Intro</button>
       <button class="action-btn" id="btnNextEp">Next Episode</button>
+      <button class="action-btn" id="btnFullscreen">&#x26F6; Fullscreen</button>
     </div>
   </div>
 
@@ -625,6 +627,22 @@
     if (!state) return;
     var s = state;
     var skip = recentlyInteracted();
+
+    // Platform badge
+    var badge = document.getElementById('platformBadge');
+    if (badge && s.platform) {
+      badge.style.display = '';
+      if (s.platform === 'netflix') {
+        badge.textContent = 'N';
+        badge.style.background = '#E50914';
+      } else if (s.platform === 'disney') {
+        badge.textContent = 'D+';
+        badge.style.background = '#0057B8';
+      } else {
+        badge.textContent = s.platform;
+        badge.style.background = '#555';
+      }
+    }
 
     // Theme
     if (s.theme) applyTheme(s.theme);
@@ -903,6 +921,7 @@
   document.getElementById('btnMute').addEventListener('click', function() { send({ type: 'TOGGLE_MUTE' }); });
   document.getElementById('btnSkipIntro').addEventListener('click', function() { send({ type: 'SKIP_INTRO' }); });
   document.getElementById('btnNextEp').addEventListener('click', function() { send({ type: 'NEXT_EPISODE' }); });
+  document.getElementById('btnFullscreen').addEventListener('click', function() { send({ type: 'TOGGLE_FULLSCREEN' }); });
 
   // Seek bar
   var seekBar = document.getElementById('seekBar');
