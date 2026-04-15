@@ -631,15 +631,23 @@
     var badge = document.getElementById('platformBadge');
     if (badge && s.platform) {
       badge.style.display = '';
-      if (s.platform === 'netflix') {
+      // Hulu-bundle content on disneyplus.com → show Hulu green badge
+      if (s.platform === 'disney' && s.isHulu) {
+        badge.textContent = 'hulu';
+        badge.style.background = '#1CE783';
+        badge.style.color = '#040405';
+      } else if (s.platform === 'netflix') {
         badge.textContent = 'N';
         badge.style.background = '#E50914';
+        badge.style.color = '#fff';
       } else if (s.platform === 'disney') {
         badge.textContent = 'D+';
         badge.style.background = '#0057B8';
+        badge.style.color = '#fff';
       } else {
         badge.textContent = s.platform;
         badge.style.background = '#555';
+        badge.style.color = '#fff';
       }
     }
 
