@@ -3,71 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EnjoySubs — Privacy Policy</title>
+<title>EnjoySubs - Privacy Policy</title>
 <style>
-  body {
-    font-family: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    max-width: 680px; margin: 40px auto; padding: 0 20px;
-    color: #222; line-height: 1.7; background: #fafafa;
-  }
-  h1 { font-size: 24px; margin-bottom: 4px; }
-  h2 { font-size: 18px; margin-top: 28px; }
-  .updated { color: #888; font-size: 13px; margin-bottom: 32px; }
-  ul { padding-left: 20px; }
-  li { margin-bottom: 6px; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #0c1223; color: #e0e0e0; margin: 0; padding: 40px 24px; line-height: 1.7; }
+  .container { max-width: 640px; margin: 0 auto; }
+  h1 { color: #fff; font-size: 24px; margin-bottom: 4px; }
+  h2 { color: #00e0c0; font-size: 16px; margin-top: 32px; margin-bottom: 8px; }
+  p, li { font-size: 14px; color: #c0c0c0; }
+  .updated { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 32px; }
   a { color: #3457A6; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  .footer { margin-top: 48px; font-size: 12px; color: rgba(255,255,255,0.3); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
 </style>
 </head>
 <body>
-<h1>EnjoySubs — Privacy Policy</h1>
-<p class="updated">Last updated: April 3, 2026</p>
+<div class="container">
 
-<h2>What EnjoySubs does</h2>
-<p>EnjoySubs is a Chrome extension that displays dual-language subtitles on Netflix. It intercepts Netflix's own subtitle responses in your browser and renders a custom overlay on top of the video player.</p>
+<h1>EnjoySubs - Privacy Policy</h1>
+<p class="updated">Last updated: April 2026</p>
 
-<h2>Data collection</h2>
-<p><strong>EnjoySubs does not collect, store, or transmit any personal data.</strong></p>
+<h2>Overview</h2>
+<p>EnjoySubs is a Chrome browser extension that displays two subtitle tracks simultaneously on Netflix, Disney+ (including Hulu-bundle titles viewed through disneyplus.com), Amazon Prime Video, and Coupang Play. We take your privacy seriously. This policy explains what data the extension handles, how it is used, and your rights.</p>
+
+<h2>Data Stored Locally on Your Device</h2>
+<p>The following data is stored entirely on your device using Chrome's built-in storage API. It is <strong>not</strong> transmitted to any external server.</p>
 <ul>
-  <li>No browsing history, viewing habits, or Netflix account information is collected.</li>
-  <li>No subtitle data is sent to any external server.</li>
-  <li>No analytics, telemetry, or tracking of any kind is used.</li>
+  <li><strong>Subtitle language preferences</strong> — your selected Sub A and Sub B languages per platform</li>
+  <li><strong>Usage tracking</strong> — seconds of dual subtitle viewing per week (for free tier limit enforcement)</li>
+  <li><strong>Display preferences</strong> — font size, subtitle position, color settings, opacity, and panel layout</li>
+  <li><strong>Premium status</strong> — whether you have an active subscription (cached locally)</li>
+  <li><strong>Phone remote room code</strong> — a random code used when you pair the optional phone remote</li>
 </ul>
 
-<h2>Local storage</h2>
-<p>EnjoySubs uses Chrome's <code>storage</code> API to save your preferences locally on your device. This includes:</p>
+<h2>Data Processed but Not Stored</h2>
 <ul>
-  <li>Selected subtitle languages and sync offsets</li>
-  <li>Styling options (colors, font size, opacity)</li>
-  <li>Panel position and layout preferences</li>
-  <li>Phone remote room code (if you use the remote feature)</li>
-</ul>
-<p>These settings never leave your device and are not accessible to the developer or any third party.</p>
-
-<h2>Phone remote feature</h2>
-<p>If you use the optional phone remote control feature, your device connects to a WebSocket relay server hosted on Render.com. This relay:</p>
-<ul>
-  <li>Forwards playback control messages (play, pause, volume, seek) between your phone and your browser — nothing else.</li>
-  <li>Does not store, log, or inspect message contents.</li>
-  <li>Uses a random room code as a shared key. No account or login is required.</li>
-  <li>Does not transmit subtitle data, viewing history, or personal information.</li>
+  <li><strong>Streaming-service subtitle data</strong> — EnjoySubs intercepts subtitle responses from the streaming site you are watching (Netflix, Disney+, Prime Video, or Coupang Play) in order to display a second subtitle track. This data is processed locally in your browser and is <strong>never</strong> sent to any external server, stored on disk, or shared with anyone.</li>
 </ul>
 
-<h2>Permissions explained</h2>
+<h2>Data Handled by Third Parties</h2>
 <ul>
-  <li><strong>storage</strong> — Save your settings locally on your device.</li>
-  <li><strong>tabs</strong> — Detect when you are on a Netflix page so the extension can activate.</li>
-  <li><strong>scripting</strong> — Inject the subtitle overlay into Netflix pages.</li>
-  <li><strong>Host permissions (netflix.com)</strong> — Required to run on Netflix pages only.</li>
-  <li><strong>Host permissions (enjoysubs-relay.onrender.com)</strong> — Connect to the phone remote relay server (optional feature).</li>
+  <li><strong>Payment processing (Premium only)</strong> — If you purchase a Premium subscription, payment is handled by ExtensionPay (powered by Stripe). Your email address is collected by ExtensionPay to manage your subscription. We do not store your credit card number, billing address, or financial information. See <a href="https://extensionpay.com/privacy">ExtensionPay's privacy policy</a> and <a href="https://stripe.com/privacy">Stripe's privacy policy</a> for details.</li>
+  <li><strong>Phone remote feature (optional)</strong> — If you use the phone remote control feature, your browser and phone connect to a WebSocket relay server hosted on Render.com. The relay forwards short playback-control messages (play, pause, seek, volume, subtitle toggle) between your two devices using a randomly generated room code as a shared key. The relay does not require an account, does not log or inspect message contents, and does not transmit subtitle text, viewing history, or personal information. Session data is ephemeral and discarded when you disconnect.</li>
 </ul>
 
-<h2>Third-party services</h2>
-<p>EnjoySubs does not use Google Analytics, advertising networks, or any third-party tracking services. The only external service used is the optional phone remote relay described above.</p>
+<h2>Data We Do NOT Collect</h2>
+<ul>
+  <li>We do <strong>not</strong> collect your name, email address, or personal information (except through ExtensionPay if you choose to subscribe)</li>
+  <li>We do <strong>not</strong> collect your Netflix, Disney+, Hulu, Prime Video, or Coupang Play account information or credentials</li>
+  <li>We do <strong>not</strong> collect your browsing history or viewing habits</li>
+  <li>We do <strong>not</strong> collect or store subtitle content from any streaming service</li>
+  <li>We do <strong>not</strong> track which shows or movies you watch</li>
+  <li>We do <strong>not</strong> use cookies, analytics, or tracking pixels</li>
+  <li>We do <strong>not</strong> sell, share, or transfer any data to third parties for advertising purposes</li>
+</ul>
 
-<h2>Changes to this policy</h2>
-<p>If this policy changes, the updated version will be published at this same URL with a new "Last updated" date.</p>
+<h2>Permissions Explained</h2>
+<ul>
+  <li><strong>Host permissions</strong> (netflix.com, disneyplus.com, primevideo.com, coupangplay.com, and the Prime Video subtitle CDN) — Required to inject the dual subtitle display and control panel on the video pages of those services.</li>
+  <li><strong>Host permissions</strong> (enjoysubs-relay.onrender.com) — Required only if you use the optional phone remote feature.</li>
+  <li><strong>storage</strong> — Required to save your language preferences, display settings, and usage data locally on your device.</li>
+  <li><strong>scripting</strong> — Required to inject the subtitle overlay into streaming pages.</li>
+</ul>
+
+<h2>Data Retention</h2>
+<ul>
+  <li>Local storage data persists until you uninstall the extension or clear your browser data</li>
+  <li>WebSocket relay session data is deleted immediately on disconnect</li>
+  <li>Payment records are retained by ExtensionPay/Stripe according to their retention policies</li>
+</ul>
+
+<h2>Your Rights</h2>
+<ul>
+  <li>You can view all locally stored data by visiting <code>chrome://extensions</code> and inspecting the extension's storage</li>
+  <li>You can delete all extension data by uninstalling EnjoySubs</li>
+  <li>You can request deletion of your payment records by contacting ExtensionPay support</li>
+  <li>If you are in the EU, you have the right to access, correct, delete, or port your personal data under GDPR</li>
+</ul>
+
+<h2>Children's Privacy</h2>
+<p>EnjoySubs does not knowingly collect any personal information from children under 13. The extension does not require account creation or personal data input.</p>
+
+<h2>Changes to This Policy</h2>
+<p>We may update this privacy policy from time to time. Any changes will be reflected in the "Last updated" date at the top of this page. Continued use of the extension after changes constitutes acceptance of the updated policy.</p>
 
 <h2>Contact</h2>
-<p>Questions or concerns? Open an issue at <a href="https://github.com/hayjay29/enjoysubs-relay">github.com/hayjay29/enjoysubs-relay</a>.</p>
+<p>If you have questions about this privacy policy or EnjoySubs, please contact: <strong>enjoysubs.team@gmail.com</strong></p>
+
+<div class="footer">
+  EnjoySubs is an independent project and is not affiliated with, endorsed by, or sponsored by Netflix, The Walt Disney Company, Hulu, Amazon, or Coupang. All trademarks belong to their respective owners.
+</div>
+
+</div>
 </body>
 </html>
