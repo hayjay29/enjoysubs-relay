@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 40" width="64" height="40">
+  <style>
+    .w { fill: #1399FF; font-family: "Segoe UI", Arial, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; }
+  </style>
+  <text x="4" y="22" class="w">pv</text>
+  <!-- Amazon smile arrow under 'pv' -->
+  <path d="M 6 30 Q 24 38 46 28" stroke="#1399FF" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M 42 26 L 47 27.5 L 44 32" stroke="#1399FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

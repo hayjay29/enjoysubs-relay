@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnjoySubs — Dual Subtitles for Netflix, Disney+, Prime Video & Coupang Play</title>
+<meta name="description" content="Free dual subtitles on Netflix. Watch in two languages at once on Netflix, Disney+, Prime Video, and Coupang Play. Perfect for language learning, K-drama fans, and bilingual families.">
+<meta name="keywords" content="dual subtitles, double subtitles, two subtitles netflix, bilingual subtitles, dual subs, language learning, learn korean, learn japanese, k-drama subtitles, anime subtitles, netflix subtitle extension, disney plus subtitles, prime video subtitles, coupang play subtitles, side by side subtitles">
+<meta property="og:title" content="EnjoySubs — Dual Subtitles for Netflix, Disney+, Prime Video & Coupang Play">
+<meta property="og:description" content="Free dual subtitles on Netflix. Two languages at once on 4 streaming platforms. Perfect for language learning and bilingual families.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://enjoysubs-relay.onrender.com/">
+<meta property="og:image" content="https://enjoysubs-relay.onrender.com/icons/icon128.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EnjoySubs — Free Dual Subtitles on Netflix">
+<meta name="twitter:description" content="Two subtitle languages at once on Netflix, Disney+, Prime Video, and Coupang Play. Free on Netflix.">
+<link rel="canonical" href="https://enjoysubs-relay.onrender.com/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "EnjoySubs",
+  "operatingSystem": "Chrome (Browser Extension)",
+  "applicationCategory": "BrowserApplication",
+  "description": "Dual subtitles on Netflix, Disney+, Prime Video, and Coupang Play. Free on Netflix.",
+  "offers": [
+    { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free (Netflix)" },
+    { "@type": "Offer", "price": "2.99", "priceCurrency": "USD", "name": "Pro Monthly" },
+    { "@type": "Offer", "price": "24.99", "priceCurrency": "USD", "name": "Pro Annual" },
+    { "@type": "Offer", "price": "49.99", "priceCurrency": "USD", "name": "Pro Lifetime" }
+  ],
+  "url": "https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1A1F36; --navy-light: #242B45; --navy-mid: #2D3A5C;
+  --gold: #F6B93B; --gold-dim: rgba(246,185,59,.12); --gold-glow: rgba(246,185,59,.08);
+  --pink: #E8808A;
+  --text: #E8E6F0; --text-dim: #8B8FA8; --text-faint: #5C6080;
+  --bg: #0D1020;
+  --serif: 'Literata', Georgia, serif; --sans: 'Outfit', system-ui, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s, backdrop-filter 0.3s; }
+nav.scrolled { background: rgba(13,16,32,.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,.04); }
+.nav-logo { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.nav-logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a { font-size: 0.85rem; color: var(--text-dim); letter-spacing: 0.02em; text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { background: var(--gold); color: var(--navy); padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; text-decoration: none !important; transition: transform 0.2s, box-shadow 0.2s; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(246,185,59,.25); }
+@media (max-width: 768px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6rem 2rem 4rem; position: relative; }
+.hero::before { content: ''; position: absolute; top: -10%; left: 50%; transform: translateX(-50%); width: min(900px, 120vw); height: 600px; background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%); pointer-events: none; }
+.hero-eyebrow { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; animation: fadeUp 0.8s ease both; }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 4rem); line-height: 1.2; max-width: 750px; font-weight: 400; margin-bottom: 1.5rem; animation: fadeUp 0.8s ease 0.15s both; }
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero-body { font-size: 1.1rem; color: var(--text-dim); max-width: 520px; margin-bottom: 2.5rem; line-height: 1.8; animation: fadeUp 0.8s ease 0.3s both; }
+.hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s ease 0.45s both; }
+
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.75rem; border-radius: 10px; font-size: 0.95rem; font-weight: 500; font-family: var(--sans); text-decoration: none !important; transition: all 0.25s ease; border: none; cursor: pointer; }
+.btn-gold { background: var(--gold); color: var(--navy); box-shadow: 0 4px 24px rgba(246,185,59,.2); }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(246,185,59,.35); }
+.btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--navy-mid); }
+.btn-ghost:hover { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.12); color: var(--text); }
+
+.demo { padding: 2rem 2rem 6rem; display: flex; justify-content: center; }
+.demo-wrap { max-width: 800px; width: 100%; }
+.demo-screen { width: 100%; aspect-ratio: 16/9; background: var(--navy); border-radius: 14px; border: 1px solid var(--navy-mid); position: relative; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.demo-screen::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.6) 100%); }
+.demo-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; z-index: 1; }
+.demo-play::after { content: ''; width: 0; height: 0; border-left: 18px solid rgba(255,255,255,.6); border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 4px; }
+.sub-line { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; padding: 5px 18px; border-radius: 5px; font-size: clamp(0.75rem, 1.8vw, 1.05rem); z-index: 2; line-height: 1.5; white-space: nowrap; transition: opacity 0.5s ease; }
+.sub-a { bottom: 18%; background: rgba(246,185,59,.18); border: 1px solid rgba(246,185,59,.3); color: #f0e8d0; }
+.sub-b { bottom: 8%; background: rgba(232,230,240,.12); border: 1px solid rgba(232,230,240,.2); color: #d8d6e0; }
+.demo-caption { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--text-faint); letter-spacing: 0.03em; }
+
+.story { max-width: 660px; margin: 0 auto; padding: 6rem 2rem; }
+.section-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 1.25rem; }
+.story h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.2rem); line-height: 1.3; margin-bottom: 1.75rem; font-weight: 400; }
+.story p { color: var(--text-dim); font-size: 1.02rem; margin-bottom: 1.25rem; line-height: 1.85; }
+.story p strong { color: var(--text); font-weight: 500; }
+.story-rule { width: 40px; height: 2px; background: var(--gold); margin: 2.5rem 0; opacity: 0.4; border: none; }
+
+.how { padding: 6rem 2rem; max-width: 900px; margin: 0 auto; }
+.how h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.2rem); text-align: center; margin-bottom: 3.5rem; font-weight: 400; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+.step { text-align: center; padding: 2rem 1.5rem; border-radius: 14px; border: 1px solid rgba(255,255,255,.04); background: rgba(255,255,255,.015); transition: border-color 0.3s, background 0.3s; }
+.step:hover { border-color: rgba(246,185,59,.15); background: rgba(246,185,59,.03); }
+.step-num { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+.step-svg { display: block; margin: 0 auto 1rem; }
+.step h3 { font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; }
+.step p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.65; }
+
+.features { padding: 6rem 2rem; max-width: 1000px; margin: 0 auto; }
+.features h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.2rem); text-align: center; margin-bottom: 0.75rem; font-weight: 400; }
+.features-sub { text-align: center; color: var(--text-dim); margin-bottom: 3.5rem; font-size: 1rem; }
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.25rem; }
+.feat { padding: 1.75rem; border-radius: 14px; border: 1px solid rgba(255,255,255,.04); background: rgba(255,255,255,.015); transition: all 0.3s; }
+.feat:hover { border-color: rgba(255,255,255,.08); background: rgba(255,255,255,.03); transform: translateY(-2px); }
+.feat-svg { display: block; margin-bottom: 0.75rem; }
+.feat h3 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.4rem; }
+.feat p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.65; }
+.feat .badge { display: inline-block; margin-top: 0.6rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 4px; background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(246,185,59,.15); }
+
+.quote-section { padding: 5rem 2rem; text-align: center; }
+.quote { font-family: var(--serif); font-size: clamp(1.2rem, 3vw, 1.8rem); font-style: italic; color: var(--text-dim); max-width: 600px; margin: 0 auto 1rem; line-height: 1.5; font-weight: 400; }
+.quote-attr { font-size: 0.8rem; color: var(--text-faint); letter-spacing: 0.05em; }
+
+.pricing { padding: 6rem 2rem; max-width: 860px; margin: 0 auto; }
+.pricing h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.2rem); text-align: center; margin-bottom: 0.5rem; font-weight: 400; }
+.pricing-sub { text-align: center; color: var(--text-dim); margin-bottom: 3rem; font-size: 1rem; }
+.price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 600px) { .price-grid { grid-template-columns: 1fr; } }
+.price-card { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.05); border-radius: 16px; padding: 2.25rem 1.75rem; }
+.price-card.featured { border-color: rgba(246,185,59,.3); box-shadow: 0 0 50px var(--gold-glow); }
+.plan-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-bottom: 0.6rem; }
+.plan-price { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 0.2rem; }
+.plan-price span { font-family: var(--sans); font-size: 0.9rem; color: var(--text-dim); font-weight: 300; }
+.plan-note { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+.plan-list { list-style: none; margin-bottom: 1.75rem; }
+.plan-list li { font-size: 0.87rem; color: var(--text-dim); padding: 0.35rem 0 0.35rem 1.4rem; position: relative; }
+.plan-list li::before { content: ''; position: absolute; left: 0; top: 0.65rem; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); opacity: 0.6; }
+.launch-banner { text-align: center; margin-top: 1.5rem; padding: 1rem; border-radius: 10px; background: var(--gold-dim); border: 1px solid rgba(246,185,59,.12); font-size: 0.85rem; color: var(--gold); }
+.launch-banner strong { font-weight: 600; }
+
+.platforms { text-align: center; padding: 3rem 2rem 1rem; }
+.platforms p { font-size: 0.82rem; color: var(--text-faint); margin-bottom: 1rem; letter-spacing: 0.03em; }
+.plat-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+.plat { font-size: 0.78rem; color: var(--text-dim); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.plat .ico { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid rgba(255,255,255,.08); overflow: hidden; padding: 6px; }
+.plat .ico img { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
+.plat.soon { opacity: 0.35; }
+.plat.soon .ico { background: rgba(255,255,255,.04); }
+
+.privacy-strip { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; text-align: center; }
+.privacy-strip h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; margin-bottom: 0.75rem; }
+.privacy-strip p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 1rem; }
+
+.final-cta { text-align: center; padding: 6rem 2rem; position: relative; }
+.final-cta::before { content: ''; position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); width: 600px; height: 300px; background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%); pointer-events: none; }
+.final-cta h2 { font-family: var(--serif); font-size: clamp(1.6rem, 4vw, 2.5rem); margin-bottom: 0.75rem; font-weight: 400; }
+.final-cta p { color: var(--text-dim); margin-bottom: 2rem; font-size: 1.05rem; }
+
+footer { text-align: center; padding: 2rem; border-top: 1px solid rgba(255,255,255,.04); font-size: 0.78rem; color: var(--text-faint); }
+footer a { color: var(--text-dim); }
+
+@media (max-width: 600px) {
+  .hero { padding: 5rem 1.5rem 3rem; }
+  .hero h1 { font-size: 1.9rem; }
+  .story, .how, .features, .pricing { padding: 4rem 1.5rem; }
+  .steps { grid-template-columns: 1fr; }
+  .feat-grid { grid-template-columns: 1fr; }
+  .sub-line { font-size: 0.7rem; padding: 3px 10px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-logo"><span class="dot"></span>EnjoySubs</div>
+  <div class="nav-links">
+    <a href="#story">Story</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh" class="nav-cta">Install Free</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="hero-eyebrow">For language learners, K-drama fans &amp; bilingual families</p>
+  <h1>Two subtitles,<br><em>at the same time.</em></h1>
+  <p class="hero-body">EnjoySubs shows two subtitle languages on screen simultaneously &mdash; on Netflix, Disney+, Prime Video, and Coupang Play. Free on Netflix, forever. No compromise. Just press play.</p>
+  <div class="hero-buttons">
+    <a href="https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh" class="btn btn-gold">Install Free on Chrome</a>
+    <a href="#story" class="btn btn-ghost">Our story</a>
+  </div>
+</section>
+
+<section class="demo reveal">
+  <div class="demo-wrap">
+    <div class="demo-screen">
+      <div class="demo-play"></div>
+      <div class="sub-line sub-a" id="subA">I've been waiting for you this whole time.</div>
+      <div class="sub-line sub-b" id="subB">&#51060; &#49884;&#44036; &#46041;&#50504; &#44228;&#49549; &#44592;&#45796;&#47532;&#44256; &#51080;&#50632;&#50612;.</div>
+    </div>
+    <p class="demo-caption">English + Korean &mdash; using the platform's own subtitles, perfectly synced</p>
+  </div>
+</section>
+
+<section class="story reveal" id="story">
+  <p class="section-tag">Why I built this</p>
+  <h2>I just wanted to watch a movie with my family.</h2>
+  <p>My wife speaks Korean. I speak English. We'd sit down to watch an anime together and settle on Korean subtitles &mdash; which I'm not the greatest at reading. I'd end up reading the manga in English later just to understand what happened.</p>
+  <p>Same thing with our kids. We'd watch something in Korean and sometimes there's no English subtitle available. <strong>Everyone's laughing and I'm just sitting there, disconnected from the moment.</strong></p>
+  <p>I didn't want to "catch up later." I wanted to experience it <em>together</em> &mdash; to laugh at the same jokes, feel the same tension, share the same scene.</p>
+  <hr class="story-rule">
+  <p>Streaming services only let you pick one subtitle language at a time. For bilingual households, that means someone always compromises. <strong>EnjoySubs fixes that.</strong></p>
+  <p>It displays two subtitle tracks simultaneously on Netflix, Disney+, Prime Video, and Coupang Play &mdash; using each platform's own professionally translated subtitles. No AI translation, no external files, no sync issues. Just two languages, shown at the same time.</p>
+  <p>I built this for my family. Then I realized <strong>we aren't the only ones.</strong></p>
+</section>
+
+<section class="how reveal">
+  <h2>Three steps to movie night.</h2>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">Step 1</span>
+      <svg class="step-svg" width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="rgba(246,185,59,.1)" stroke="rgba(246,185,59,.25)" stroke-width="1"/><path d="M12 18h12M18 12v12" stroke="#F6B93B" stroke-width="2" stroke-linecap="round"/></svg>
+      <h3>Install the extension</h3>
+      <p>Add EnjoySubs to Chrome from the Web Store. No account needed, no sign-up.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 2</span>
+      <svg class="step-svg" width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="rgba(246,185,59,.1)" stroke="rgba(246,185,59,.25)" stroke-width="1"/><circle cx="13" cy="18" r="4" fill="none" stroke="#F6B93B" stroke-width="1.5"/><circle cx="23" cy="18" r="4" fill="none" stroke="#F6B93B" stroke-width="1.5"/><line x1="17" y1="18" x2="19" y2="18" stroke="#F6B93B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <h3>Pick two languages</h3>
+      <p>Choose any two subtitle languages the platform supports. EnjoySubs detects them automatically.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 3</span>
+      <svg class="step-svg" width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="rgba(246,185,59,.1)" stroke="rgba(246,185,59,.25)" stroke-width="1"/><path d="M11 14l4 4-4 4" stroke="#F6B93B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M18 14l4 4-4 4" stroke="#F6B93B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      <h3>Watch together</h3>
+      <p>Both subtitles appear at the same time. No compromise. No catching up later.</p>
+    </div>
+  </div>
+</section>
+
+<section class="features reveal" id="features">
+  <p class="section-tag" style="text-align:center">Features</p>
+  <h2>Everything you need for movie night.</h2>
+  <p class="features-sub">The free tier is genuinely useful. Premium makes it perfect.</p>
+  <div class="feat-grid">
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><rect x="2" y="6" width="24" height="16" rx="3" fill="none" stroke="#F6B93B" stroke-width="1.5"/><line x1="7" y1="16" x2="21" y2="16" stroke="#F6B93B" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="12" x2="19" y2="12" stroke="#8B8FA8" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <h3>Dual Subtitle Display</h3>
+      <p>Two subtitle languages on screen at the same time. English + Korean, Spanish + English, any combination your streaming platform supports.</p>
+    </div>
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><path d="M14 4l2.5 5.5L22 10l-4 4 1 5.5L14 17l-5 2.5 1-5.5-4-4 5.5-.5z" fill="none" stroke="#F6B93B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <h3>Platform-Native Subtitles</h3>
+      <p>Uses each platform's own professionally translated subtitle tracks and timing. No AI guesswork, no sync issues. Always accurate.</p>
+    </div>
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><path d="M8 6l12 8-12 8z" fill="none" stroke="#F6B93B" stroke-width="1.5" stroke-linejoin="round"/><line x1="22" y1="7" x2="22" y2="21" stroke="#F6B93B" stroke-width="2" stroke-linecap="round"/></svg>
+      <h3>Works on 4 Platforms</h3>
+      <p>Netflix, Disney+, Prime Video, and Coupang Play. One extension, one experience &mdash; wherever you watch.</p>
+    </div>
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="none" stroke="#F6B93B" stroke-width="1.5"/><circle cx="10" cy="12" r="2" fill="#F6B93B"/><circle cx="18" cy="12" r="2" fill="#8B8FA8"/><line x1="8" y1="20" x2="20" y2="20" stroke="#F6B93B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <h3>Full Customization</h3>
+      <p>Font size, custom colors per language, background opacity, text outline, shadow. Make subtitles readable on any scene.</p>
+      <span class="badge">Premium</span>
+    </div>
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><rect x="8" y="3" width="12" height="22" rx="3" fill="none" stroke="#F6B93B" stroke-width="1.5"/><line x1="12" y1="21" x2="16" y2="21" stroke="#F6B93B" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="8" x2="17" y2="8" stroke="#8B8FA8" stroke-width="1" stroke-linecap="round"/></svg>
+      <h3>Phone Remote</h3>
+      <p>Control subtitles from your phone. Scan a QR code, change languages, adjust styling &mdash; without touching your laptop.</p>
+      <span class="badge">Premium</span>
+    </div>
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><rect x="4" y="4" width="20" height="20" rx="3" fill="none" stroke="#F6B93B" stroke-width="1.5" stroke-dasharray="4 2"/><path d="M10 14h8M14 10v8" stroke="#8B8FA8" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="3" fill="none" stroke="#F6B93B" stroke-width="1.5"/></svg>
+      <h3>Drag, Resize, Lock</h3>
+      <p>Move subtitle boxes anywhere. Resize them with snap guides. Lock the position so it stays perfect every time.</p>
+      <span class="badge">Premium</span>
+    </div>
+    <div class="feat">
+      <svg class="feat-svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="8" cy="14" r="4" fill="#F6B93B" opacity=".7"/><circle cx="14" cy="14" r="4" fill="#34D399" opacity=".7"/><circle cx="20" cy="14" r="4" fill="#E05050" opacity=".7"/></svg>
+      <h3>Three Color Themes</h3>
+      <p>Navy Gold, Midnight Teal, or Soft Charcoal. Pick the control panel theme that fits your vibe.</p>
+      <span class="badge">Premium</span>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section reveal">
+  <p class="quote">"We're not trying to learn a language. We're just trying to watch a movie together."</p>
+  <p class="quote-attr">&mdash; the reason EnjoySubs exists</p>
+</section>
+
+<section class="pricing reveal" id="pricing">
+  <p class="section-tag" style="text-align:center">Pricing</p>
+  <h2>Less than a coffee. Every month.</h2>
+  <p class="pricing-sub">Start free. Upgrade when movie night becomes a nightly ritual.</p>
+  <div class="price-grid">
+    <div class="price-card">
+      <p class="plan-label">Free</p>
+      <p class="plan-price">$0</p>
+      <p class="plan-note">Unlimited dual subtitles on Netflix &mdash; forever</p>
+      <ul class="plan-list">
+        <li>Unlimited Netflix dual subtitles</li>
+        <li>Two subtitle languages at once</li>
+        <li>Font size presets (S / M / L)</li>
+        <li>Auto-skip intro</li>
+        <li>1-hour phone remote trial</li>
+        <li>3-day Pro trial included</li>
+      </ul>
+      <a href="https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh" class="btn btn-ghost" style="width:100%;justify-content:center">Install Free</a>
+    </div>
+    <div class="price-card featured">
+      <p class="plan-label">Premium</p>
+      <p class="plan-price">$2.99<span> /mo</span></p>
+      <p class="plan-note">$24.99/year &middot; $49.99 lifetime</p>
+      <ul class="plan-list">
+        <li>Disney+, Prime Video, Coupang Play</li>
+        <li>Unlimited phone remote</li>
+        <li>Drag &amp; reposition subtitles</li>
+        <li>Custom colors per language</li>
+        <li>Side-by-side mode</li>
+        <li>Resizable boxes + snap guides</li>
+        <li>Position lock + multiple themes</li>
+      </ul>
+      <a href="https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh" class="btn btn-gold" style="width:100%;justify-content:center">Start Premium</a>
+    </div>
+  </div>
+  <div class="launch-banner">
+    <strong>Launch special:</strong> Lifetime access for $49.99 &mdash; one payment, forever. Limited to the first 50 users.
+  </div>
+</section>
+
+<section class="platforms reveal">
+  <p>Works on the platforms you already watch.</p>
+  <div class="plat-row">
+    <div class="plat"><span class="ico"><img src="icons/platforms/netflix-n.svg" alt="Netflix"></span>Netflix</div>
+    <div class="plat"><span class="ico"><img src="icons/platforms/disney-plus.svg" alt="Disney+"></span>Disney+</div>
+    <div class="plat"><span class="ico"><img src="icons/platforms/prime-video.svg" alt="Prime Video"></span>Prime Video</div>
+    <div class="plat"><span class="ico"><img src="icons/platforms/coupang-play.png" alt="Coupang Play"></span>Coupang Play</div>
+  </div>
+</section>
+
+<section class="privacy-strip reveal">
+  <h3>Your privacy, respected.</h3>
+  <p>EnjoySubs processes everything locally in your browser. No data collection, no tracking, no browsing history recorded. Subtitle data never leaves your device. Payment is handled securely by Stripe.</p>
+  <a href="https://enjoysubs-relay.onrender.com/privacy" style="font-size:.85rem">Read full privacy policy &rarr;</a>
+</section>
+
+<section class="final-cta reveal">
+  <h2>Stop compromising.<br>Start watching together.</h2>
+  <p>Join bilingual families who finally share the same screen.</p>
+  <a href="https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh" class="btn btn-gold">Install Free on Chrome</a>
+</section>
+
+<footer>
+  <p>EnjoySubs &copy; 2026 &middot; <a href="https://chromewebstore.google.com/detail/enjoysubs/mjlkggngagjgdnokoclfdjifoednihmh">Chrome Web Store</a> &middot; <a href="https://enjoysubs-relay.onrender.com/privacy">Privacy</a> &middot; <a href="mailto:enjoysubs.team@gmail.com">Contact</a></p>
+  <p style="margin-top:.5rem;font-size:.7rem;color:var(--text-faint)">EnjoySubs is an independent extension and is not affiliated with, endorsed by, or associated with Netflix, Inc., The Walt Disney Company, Amazon.com, Inc., or Coupang Corp. All trademarks and content are property of their respective owners.</p>
+</footer>
+
+<script>
+// Nav scroll
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 60) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// Reveal on scroll with fallback
+var reveals = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  var observer = new IntersectionObserver(function(entries) {
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].isIntersecting) {
+        entries[i].target.classList.add('visible');
+        observer.unobserve(entries[i].target);
+      }
+    }
+  }, { threshold: 0.08 });
+  for (var i = 0; i < reveals.length; i++) observer.observe(reveals[i]);
+}
+// Fallback: show everything after 1.5s
+setTimeout(function() {
+  for (var i = 0; i < reveals.length; i++) reveals[i].classList.add('visible');
+}, 1500);
+
+// Subtitle rotation
+var linesA = [
+  "I've been waiting for you this whole time.",
+  "Don't go. Please.",
+  "I think I'm starting to understand now.",
+  "We should have done this sooner."
+];
+var linesB = [
+  "\uC774 \uC2DC\uAC04 \uB3D9\uC548 \uACC4\uC18D \uAE30\uB2E4\uB9AC\uACE0 \uC788\uC5C8\uC5B4.",
+  "\uAC00\uC9C0 \uB9C8. \uC81C\uBC1C.",
+  "\uC774\uC81C \uC880 \uC54C \uAC83 \uAC19\uC544.",
+  "\uC9C4\uC791 \uC774\uB807\uAC8C \uD560 \uAC78."
+];
+var a = document.getElementById('subA');
+var b = document.getElementById('subB');
+var n = 0;
+setInterval(function() {
+  n = (n + 1) % linesA.length;
+  a.style.opacity = '0';
+  b.style.opacity = '0';
+  setTimeout(function() {
+    a.textContent = linesA[n];
+    b.textContent = linesB[n];
+    a.style.opacity = '1';
+    b.style.opacity = '1';
+  }, 600);
+}, 5000);
+</script>
+
+</body>
+</html>

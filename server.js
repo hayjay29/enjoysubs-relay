@@ -36,11 +36,35 @@ const rooms = new Map();
 
 // ── HTTP server ─────────────────────────────────────────────────
 const server = http.createServer((req, res) => {
-  if (req.url === '/' || req.url.startsWith('/phone.html') || req.url.startsWith('/?')) {
+  // Phone remote: matches /?room=XXX (QR code links) and /phone.html
+  if (req.url.startsWith('/phone.html') || req.url.startsWith('/?')) {
     const filePath = path.join(__dirname, 'phone.html');
     fs.readFile(filePath, (err, data) => {
       if (err) { res.writeHead(500); res.end('Error'); return; }
       res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+      res.end(data);
+    });
+    return;
+  }
+  // Landing/marketing page on root
+  if (req.url === '/' || req.url === '/index.html' || req.url === '/home' || req.url === '/landing') {
+    const filePath = path.join(__dirname, 'index.html');
+    fs.readFile(filePath, (err, data) => {
+      if (err) { res.writeHead(500); res.end('Error'); return; }
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+      res.end(data);
+    });
+    return;
+  }
+  // Serve icons referenced by the landing page
+  if (req.url.startsWith('/icons/')) {
+    const safe = req.url.replace(/\.\./g, '');
+    const filePath = path.join(__dirname, safe);
+    fs.readFile(filePath, (err, data) => {
+      if (err) { res.writeHead(404); res.end('Not found'); return; }
+      const ext = path.extname(safe).toLowerCase();
+      const ct = ext === '.png' ? 'image/png' : ext === '.svg' ? 'image/svg+xml' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': ct, 'Cache-Control': 'public, max-age=86400' });
       res.end(data);
     });
     return;
