@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnjoySubs - Privacy Policy</title>
+<style>
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #0c1223; color: #e0e0e0; margin: 0; padding: 40px 24px; line-height: 1.7; }
+  .container { max-width: 640px; margin: 0 auto; }
+  h1 { color: #fff; font-size: 24px; margin-bottom: 4px; }
+  h2 { color: #00e0c0; font-size: 16px; margin-top: 32px; margin-bottom: 8px; }
+  p, li { font-size: 14px; color: #c0c0c0; }
+  .updated { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 32px; }
+  a { color: #3457A6; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  .footer { margin-top: 48px; font-size: 12px; color: rgba(255,255,255,0.3); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>EnjoySubs - Privacy Policy</h1>
+<p class="updated">Last updated: April 28, 2026</p>
+
+<h2>Overview</h2>
+<p>EnjoySubs is a Chrome browser extension that displays two subtitle tracks simultaneously on supported streaming platforms: <strong>Netflix, Disney+, Amazon Prime Video, and Coupang Play</strong>. We take your privacy seriously. This policy explains what data we collect, how we use it, and your rights.</p>
+
+<h2>Data Stored Locally on Your Device</h2>
+<p>The following data is stored entirely on your device using Chrome's built-in storage API. It is <strong>not</strong> transmitted to any external server.</p>
+<ul>
+  <li><strong>Subtitle language preferences</strong> — your selected Sub A and Sub B languages</li>
+  <li><strong>Usage tracking</strong> — internal counter of dual subtitle viewing time (legacy, unused; the free tier currently has no time limit)</li>
+  <li><strong>Display preferences</strong> — font size, subtitle position, color settings</li>
+  <li><strong>Premium status</strong> — whether you have an active subscription</li>
+</ul>
+
+<h2>Data Processed but Not Stored</h2>
+<ul>
+  <li><strong>Subtitle data from supported streaming platforms</strong> — EnjoySubs intercepts subtitle responses from Netflix, Disney+, Prime Video, and Coupang Play to display a second subtitle track. This data is processed locally in your browser and is never sent to any external server, stored on disk, or shared with anyone.</li>
+</ul>
+
+<h2>Data Handled by Third Parties</h2>
+<ul>
+  <li><strong>Payment processing</strong> — If you purchase a Premium subscription, payment is handled by ExtensionPay (powered by Stripe). Your email address is collected by ExtensionPay to manage your subscription. We do not store your credit card number, billing address, or financial information. See <a href="https://extensionpay.com/privacy">ExtensionPay's privacy policy</a> and <a href="https://stripe.com/privacy">Stripe's privacy policy</a> for details.</li>
+  <li><strong>Phone remote feature</strong> — If you use the phone remote control feature, your device connects to a WebSocket relay server. The relay server processes only a randomly generated room code (not tied to your identity) and playback control commands (play, pause, volume, seek). No personal information, streaming content, or subtitle text is transmitted. Session data is ephemeral and deleted when you disconnect.</li>
+</ul>
+
+<h2>Data We Do NOT Collect</h2>
+<ul>
+  <li>We do <strong>not</strong> collect your name, email address, or personal information (except through ExtensionPay if you choose to subscribe)</li>
+  <li>We do <strong>not</strong> collect your streaming account information or credentials (Netflix, Disney+, Prime Video, Coupang Play, etc.)</li>
+  <li>We do <strong>not</strong> collect your browsing history or viewing habits</li>
+  <li>We do <strong>not</strong> collect or store subtitle content from any platform</li>
+  <li>We do <strong>not</strong> track which shows or movies you watch</li>
+  <li>We do <strong>not</strong> use cookies, analytics, or tracking pixels</li>
+  <li>We do <strong>not</strong> sell, share, or transfer any data to third parties for advertising purposes</li>
+</ul>
+
+<h2>Permissions Explained</h2>
+<ul>
+  <li><strong>Access to supported streaming sites</strong> (netflix.com, disneyplus.com, primevideo.com, coupangplay.com) — Required to inject the dual subtitle display and control panel on video pages. The extension does not run on any other website.</li>
+  <li><strong>Access to cf-timedtext.aux.pv-cdn.net</strong> — Required to fetch Prime Video subtitle files for display.</li>
+  <li><strong>Storage</strong> — Required to save your language preferences, display settings, and usage data locally on your device</li>
+  <li><strong>Tabs</strong> — Required to detect supported streaming pages and route phone remote messages to the correct tab</li>
+  <li><strong>Scripting</strong> — Required to inject the subtitle overlay UI into supported streaming pages</li>
+</ul>
+
+<h2>Data Retention</h2>
+<ul>
+  <li>Local storage data persists until you uninstall the extension or clear your browser data</li>
+  <li>WebSocket relay session data is deleted immediately on disconnect</li>
+  <li>Payment records are retained by ExtensionPay/Stripe according to their retention policies</li>
+</ul>
+
+<h2>Your Rights</h2>
+<ul>
+  <li>You can view all locally stored data by visiting <code>chrome://extensions</code> and inspecting the extension's storage</li>
+  <li>You can delete all extension data by uninstalling EnjoySubs</li>
+  <li>You can request deletion of your payment records by contacting ExtensionPay support</li>
+  <li>If you are in the EU, you have the right to access, correct, delete, or port your personal data under GDPR</li>
+</ul>
+
+<h2>Children's Privacy</h2>
+<p>EnjoySubs does not knowingly collect any personal information from children under 13. The extension does not require account creation or personal data input.</p>
+
+<h2>Changes to This Policy</h2>
+<p>We may update this privacy policy from time to time. Any changes will be reflected in the "Last updated" date at the top of this page. Continued use of the extension after changes constitutes acceptance of the updated policy.</p>
+
+<h2>Contact</h2>
+<p>If you have questions about this privacy policy or EnjoySubs, please contact: <strong>enjoysubs.team@gmail.com</strong></p>
+
+<div class="footer">
+  EnjoySubs is an independent project and is not affiliated with, endorsed by, or associated with Netflix, Inc., The Walt Disney Company, Amazon.com, Inc., or Coupang Corp. All trademarks and content are property of their respective owners.
+</div>
+
+</div>
+</body>
+</html>
