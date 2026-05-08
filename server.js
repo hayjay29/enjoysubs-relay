@@ -85,12 +85,46 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // /translate and /purge endpoints removed — AI translation feature disabled.
-  // Archive available in EnjoySubs/_archive/ai-translation/ for future restoration.
+  // ── POST /trial-check — anti-abuse trial tracking ──
+  // Tracks first-install date by fingerprint hash so trial cannot be reset
+  // by uninstalling and reinstalling. Uses in-memory storage (good enough
+  // for early stage; can migrate to persistent store later).
+  if (req.method === 'POST' && req.url === '/trial-check') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        const { fingerprint } = JSON.parse(body);
+        if (!fingerprint || typeof fingerprint !== 'string' || fingerprint.length < 16) {
+          res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ error: 'invalid_fingerprint' }));
+          return;
+        }
+        let firstInstalledAt = trialMap.get(fingerprint);
+        if (!firstInstalledAt) {
+          firstInstalledAt = new Date().toISOString();
+          trialMap.set(fingerprint, firstInstalledAt);
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ firstInstalledAt }));
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ error: 'invalid_request' }));
+      }
+    });
+    return;
+  }
 
   res.writeHead(404);
   res.end('Not found');
 });
+
+// ── In-memory trial tracker ──
+// Maps fingerprint hash → ISO date of first install.
+// Persists for the life of the server process (Render restarts wipe it,
+// which is fine for early stage — affected users just get fresh trial,
+// matching current behavior).
+const trialMap = new Map();
 
 // ── WebSocket server (using ws package) ─────────────────────────
 const wss = new WebSocket.Server({ noServer: true });
