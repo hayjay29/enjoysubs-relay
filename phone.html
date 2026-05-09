@@ -378,28 +378,6 @@
           </label>
         </div>
       </div>
-      <!-- Position nudge pad -->
-      <div class="row" style="flex-direction:column; gap:8px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-          <label style="margin:0;">Move subtitles</label>
-          <div id="nudgeTrackSel" style="display:flex; gap:4px;">
-            <button type="button" class="nudge-track active" data-track="both" style="padding:4px 10px; font-size:11px; border-radius:6px; border:1px solid rgba(255,255,255,0.15); background:rgba(246,185,59,0.25); color:#fff;">Both</button>
-            <button type="button" class="nudge-track" data-track="a" style="padding:4px 10px; font-size:11px; border-radius:6px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); color:#fff;">A</button>
-            <button type="button" class="nudge-track" data-track="b" style="padding:4px 10px; font-size:11px; border-radius:6px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); color:#fff;">B</button>
-          </div>
-        </div>
-        <div id="nudgePad" style="display:grid; grid-template-columns:1fr 1fr 1fr; grid-template-rows:auto auto auto; gap:6px; width:100%; max-width:220px; margin:0 auto;">
-          <div></div>
-          <button type="button" class="btn nudge-btn" data-dir="up"    style="font-size:18px; padding:10px;">&#9650;</button>
-          <div></div>
-          <button type="button" class="btn nudge-btn" data-dir="left"  style="font-size:18px; padding:10px;">&#9664;</button>
-          <div style="display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--es-muted);" id="nudgeLockHint">unlocked</div>
-          <button type="button" class="btn nudge-btn" data-dir="right" style="font-size:18px; padding:10px;">&#9654;</button>
-          <div></div>
-          <button type="button" class="btn nudge-btn" data-dir="down"  style="font-size:18px; padding:10px;">&#9660;</button>
-          <div></div>
-        </div>
-      </div>
       <!-- Colors -->
       <div class="row">
         <label style="color:var(--es-text);">Sub A color</label>
@@ -964,41 +942,6 @@ var PLATFORM_LOGOS = {
   });
   document.getElementById('btnReset').addEventListener('click', function() {
     send({ type: 'RESET_LAYOUT' });
-  });
-
-  // Position nudge pad
-  var _nudgeTrack = 'both';
-  document.querySelectorAll('#nudgeTrackSel .nudge-track').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      _nudgeTrack = btn.getAttribute('data-track') || 'both';
-      document.querySelectorAll('#nudgeTrackSel .nudge-track').forEach(function (b) {
-        var on = b === btn;
-        b.classList.toggle('active', on);
-        b.style.background = on ? 'rgba(246,185,59,0.25)' : 'rgba(255,255,255,0.05)';
-      });
-    });
-  });
-  var NUDGE_STEP = 0.025; // 2.5% of overlay per tap
-  document.querySelectorAll('.nudge-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var locked = !!(state && state.state && state.state.lockSubtitlePosition);
-      var hint = document.getElementById('nudgeLockHint');
-      if (locked) {
-        if (hint) {
-          hint.textContent = 'locked';
-          hint.style.color = '#F6B93B';
-          setTimeout(function () { hint.textContent = 'unlocked'; hint.style.color = ''; }, 1200);
-        }
-        return;
-      }
-      var dir = btn.getAttribute('data-dir');
-      var dx = 0, dy = 0;
-      if (dir === 'up') dy = -NUDGE_STEP;
-      else if (dir === 'down') dy = NUDGE_STEP;
-      else if (dir === 'left') dx = -NUDGE_STEP;
-      else if (dir === 'right') dx = NUDGE_STEP;
-      send({ type: 'NUDGE_SUB_POSITION', track: _nudgeTrack, dx: dx, dy: dy });
-    });
   });
 
   // Playback
