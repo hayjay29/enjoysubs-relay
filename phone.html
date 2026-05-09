@@ -956,9 +956,20 @@ var PLATFORM_LOGOS = {
       send({ type: 'REFRESH_PAGE' });
     }
   });
+  // Track expected fullscreen state — only show the hint banner when ENTERING
+  // fullscreen, not when exiting. (Imperfect — desync if user uses F11 directly,
+  // but covers the common case of phone-only control.)
+  var _fsExpectedOn = false;
   document.getElementById('btnFullscreen').addEventListener('click', function() {
     send({ type: 'TOGGLE_FULLSCREEN' });
-    _showFullscreenHintOnPhone();
+    _fsExpectedOn = !_fsExpectedOn;
+    if (_fsExpectedOn) {
+      _showFullscreenHintOnPhone();
+    } else {
+      // Dismiss any existing hint when exiting
+      var existing = document.getElementById('fsPhoneHint');
+      if (existing) existing.remove();
+    }
   });
 
   // Show fullscreen exit instructions on the phone (since the on-screen
