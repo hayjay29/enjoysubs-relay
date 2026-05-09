@@ -956,7 +956,54 @@ var PLATFORM_LOGOS = {
       send({ type: 'REFRESH_PAGE' });
     }
   });
-  document.getElementById('btnFullscreen').addEventListener('click', function() { send({ type: 'TOGGLE_FULLSCREEN' }); });
+  document.getElementById('btnFullscreen').addEventListener('click', function() {
+    send({ type: 'TOGGLE_FULLSCREEN' });
+    _showFullscreenHintOnPhone();
+  });
+
+  // Show fullscreen exit instructions on the phone (since the on-screen
+  // toast is brief and can be covered by Netflix's own banner).
+  var _fsHintTimer = null;
+  function _showFullscreenHintOnPhone() {
+    var existing = document.getElementById('fsPhoneHint');
+    if (existing) existing.remove();
+    if (_fsHintTimer) { clearTimeout(_fsHintTimer); _fsHintTimer = null; }
+    var hint = document.createElement('div');
+    hint.id = 'fsPhoneHint';
+    hint.style.cssText = [
+      'position:fixed',
+      'left:50%',
+      'bottom:24px',
+      'transform:translateX(-50%)',
+      'background:rgba(20,24,40,0.96)',
+      'color:#fff',
+      'font-family:-apple-system,Segoe UI,Roboto,sans-serif',
+      'font-size:13px',
+      'line-height:1.5',
+      'padding:14px 18px',
+      'border-radius:12px',
+      'border:1px solid rgba(246,185,59,0.6)',
+      'box-shadow:0 8px 32px rgba(0,0,0,0.5)',
+      'max-width:88%',
+      'text-align:center',
+      'z-index:99999',
+      'opacity:0',
+      'transition:opacity 0.3s ease',
+    ].join(';');
+    hint.innerHTML =
+      '<div style="font-weight:700;color:#F6B93B;margin-bottom:6px;">⛶ Fullscreen toggled</div>' +
+      '<div style="margin-bottom:8px;">To exit on PC, press <b>F11</b> or hold <b>Esc</b></div>' +
+      '<div style="font-size:11px;color:#aaa;">Or tap ⛶ Fullscreen here again</div>' +
+      '<button id="fsPhoneHintClose" style="margin-top:10px;padding:6px 14px;background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:6px;font-size:12px;">Got it</button>';
+    document.body.appendChild(hint);
+    requestAnimationFrame(function () { hint.style.opacity = '1'; });
+    function dismiss() {
+      hint.style.opacity = '0';
+      setTimeout(function () { hint.remove(); }, 300);
+    }
+    document.getElementById('fsPhoneHintClose').addEventListener('click', dismiss);
+    _fsHintTimer = setTimeout(dismiss, 6000);
+  }
 
   // Seek bar
   var seekBar = document.getElementById('seekBar');
