@@ -956,17 +956,17 @@ var PLATFORM_LOGOS = {
       send({ type: 'REFRESH_PAGE' });
     }
   });
-  // Track expected fullscreen state — only show the hint banner when ENTERING
-  // fullscreen, not when exiting. (Imperfect — desync if user uses F11 directly,
-  // but covers the common case of phone-only control.)
-  var _fsExpectedOn = false;
+  // Show banner only when ENTERING fullscreen. Uses the real fullscreen state
+  // reported by the extension (state.fullscreen) so it stays accurate even if
+  // the user pressed F11 / Esc directly on the PC.
   document.getElementById('btnFullscreen').addEventListener('click', function() {
+    var currentlyOn = !!(state && state.fullscreen);
     send({ type: 'TOGGLE_FULLSCREEN' });
-    _fsExpectedOn = !_fsExpectedOn;
-    if (_fsExpectedOn) {
+    if (!currentlyOn) {
+      // We're entering fullscreen
       _showFullscreenHintOnPhone();
     } else {
-      // Dismiss any existing hint when exiting
+      // Exiting fullscreen — dismiss any existing hint
       var existing = document.getElementById('fsPhoneHint');
       if (existing) existing.remove();
     }
