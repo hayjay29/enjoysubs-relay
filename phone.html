@@ -438,6 +438,7 @@
     <div class="action-row">
       <button class="action-btn" id="btnSkipIntro">Skip Intro</button>
       <button class="action-btn" id="btnNextEp">Next Episode</button>
+      <button class="action-btn" id="btnRefresh" title="Refresh page (fixes subtitle issues)">⟳ Refresh</button>
     </div>
   </div>
 
@@ -947,6 +948,11 @@ var PLATFORM_LOGOS = {
   document.getElementById('btnMute').addEventListener('click', function() { send({ type: 'TOGGLE_MUTE' }); });
   document.getElementById('btnSkipIntro').addEventListener('click', function() { send({ type: 'SKIP_INTRO' }); });
   document.getElementById('btnNextEp').addEventListener('click', function() { send({ type: 'NEXT_EPISODE' }); });
+  document.getElementById('btnRefresh').addEventListener('click', function() {
+    if (confirm('Refresh the streaming page? This fixes most subtitle issues.')) {
+      send({ type: 'REFRESH_PAGE' });
+    }
+  });
 
   // Seek bar
   var seekBar = document.getElementById('seekBar');
