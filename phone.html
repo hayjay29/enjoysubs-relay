@@ -972,33 +972,31 @@ var PLATFORM_LOGOS = {
     hint.id = 'fsPhoneHint';
     hint.style.cssText = [
       'position:fixed',
-      'left:50%',
-      'bottom:24px',
-      'transform:translateX(-50%)',
-      'background:rgba(20,24,40,0.96)',
+      'top:0',
+      'left:0',
+      'right:0',
+      'background:rgba(20,24,40,0.97)',
       'color:#fff',
       'font-family:-apple-system,Segoe UI,Roboto,sans-serif',
       'font-size:13px',
       'line-height:1.5',
       'padding:14px 18px',
-      'border-radius:12px',
-      'border:1px solid rgba(246,185,59,0.6)',
-      'box-shadow:0 8px 32px rgba(0,0,0,0.5)',
-      'max-width:88%',
+      'border-bottom:2px solid rgba(246,185,59,0.7)',
+      'box-shadow:0 4px 16px rgba(0,0,0,0.4)',
       'text-align:center',
       'z-index:99999',
-      'opacity:0',
-      'transition:opacity 0.3s ease',
+      'transform:translateY(-100%)',
+      'transition:transform 0.3s ease',
     ].join(';');
     hint.innerHTML =
-      '<div style="font-weight:700;color:#F6B93B;margin-bottom:6px;">⛶ Fullscreen toggled</div>' +
-      '<div style="margin-bottom:8px;">To exit on PC, press <b>F11</b> or hold <b>Esc</b></div>' +
-      '<div style="font-size:11px;color:#aaa;">Or tap ⛶ Fullscreen here again</div>' +
-      '<button id="fsPhoneHintClose" style="margin-top:10px;padding:6px 14px;background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:6px;font-size:12px;">Got it</button>';
+      '<div style="font-weight:700;color:#F6B93B;margin-bottom:4px;">⛶ Fullscreen toggled</div>' +
+      '<div style="margin-bottom:6px;">To exit on PC: press <b>F11</b> or hold <b>Esc</b></div>' +
+      '<div style="font-size:11px;color:#aaa;margin-bottom:8px;">Or tap ⛶ Fullscreen here again</div>' +
+      '<button id="fsPhoneHintClose" style="padding:6px 14px;background:rgba(255,255,255,0.1);color:#fff;border:none;border-radius:6px;font-size:12px;">Got it</button>';
     document.body.appendChild(hint);
-    requestAnimationFrame(function () { hint.style.opacity = '1'; });
+    requestAnimationFrame(function () { hint.style.transform = 'translateY(0)'; });
     function dismiss() {
-      hint.style.opacity = '0';
+      hint.style.transform = 'translateY(-100%)';
       setTimeout(function () { hint.remove(); }, 300);
     }
     document.getElementById('fsPhoneHintClose').addEventListener('click', dismiss);
